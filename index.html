@@ -9,6 +9,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.2.1/dist/chartjs-plugin-annotation.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
+    /* ---------- ВСЕ СТИЛИ (КОПИРУЙТЕ ИЗ ВАШЕГО РАБОЧЕГО ФАЙЛА) ---------- */
     :root {
       --bg: #f0f4f8;
       --card-bg: #ffffff;
@@ -31,7 +32,6 @@
       --success-gradient: linear-gradient(135deg, #00bfa6 0%, #009f8c 100%);
       --error: #e74c3c;
     }
-
     .dark-theme {
       --bg: #0a1929;
       --card-bg: #112b42;
@@ -42,13 +42,7 @@
       --border: #2a4365;
       --input-bg: #14334d;
     }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Inter', system-ui, sans-serif;
       background: var(--bg);
@@ -59,7 +53,6 @@
       color: var(--text);
       line-height: 1.5;
     }
-
     .calculator-card {
       max-width: 1600px;
       width: 100%;
@@ -69,327 +62,63 @@
       padding: 32px;
       border: 1px solid var(--border);
     }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-bottom: 8px;
-    }
-
-    .tabs {
-      display: flex;
-      gap: 4px;
-      margin-bottom: 24px;
-      background: var(--input-bg);
-      padding: 4px;
-      border-radius: var(--radius-md);
-      width: fit-content;
-      flex-wrap: wrap;
-    }
-
-    .tab-btn {
-      padding: 8px 20px;
-      border-radius: var(--radius-sm);
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      color: var(--text-secondary);
-      font-weight: 500;
-      font-size: 0.9rem;
-    }
-
-    .tab-btn.active {
-      background: white;
-      color: var(--text);
-      box-shadow: var(--shadow-sm);
-      font-weight: 600;
-    }
-
-    .dark-theme .tab-btn.active {
-      background: #112b42;
-    }
-
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
-
-    .grid-container {
-      display: grid;
-      grid-template-columns: 1fr 1.5fr;
-      gap: 24px;
-    }
-
-    @media (max-width:1024px) {
-      .grid-container {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .input-panel {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .panel-section {
-      background: #f9fafb;
-      border-radius: var(--radius-lg);
-      padding: 16px;
-      border: 1px solid var(--border);
-      margin-bottom: 12px;
-      transition: background 0.2s;
-    }
-
-    .dark-theme .panel-section {
-      background: #1e293b;
-    }
-
-    .section-title {
-      font-weight: 600;
-      font-size: 0.9rem;
-      margin-bottom: 12px;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .collapsible .section-content {
-      display: block;
-    }
-
-    .collapsible.collapsed .section-content {
-      display: none;
-    }
-
-    .form-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
-    }
-
-    .param-label {
-      width: 200px;
-      min-width: 200px;
-      font-weight: 600;
-      color: var(--text);
-      white-space: nowrap;
-    }
-
-    input[type="number"],
-    input[type="text"],
-    select {
-      flex: 1 1 auto;
-      min-width: 120px;
-      max-width: 100%;
-      padding: 8px 10px;
-      border-radius: 6px;
-      border: 1px solid var(--border);
-      background: white;
-      color: var(--text);
-    }
-
-    .dark-theme input,
-    .dark-theme select {
-      background: #1e293b;
-    }
-
-    .slider-block {
-      margin-bottom: 16px;
-    }
-
-    .slider-label {
-      display: flex;
-      justify-content: space-between;
-      font-weight: 600;
-      font-size: 0.9rem;
-      margin-bottom: 8px;
-    }
-
-    .slider-value {
-      background: var(--accent);
-      color: white;
-      padding: 2px 12px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-    }
-
-    input[type="range"] {
-      width: 100%;
-      height: 6px;
-      -webkit-appearance: none;
-      background: var(--border);
-      border-radius: 10px;
-      outline: none;
-    }
-
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: var(--accent);
-      border: 2px solid white;
-      cursor: pointer;
-    }
-
-    .btn {
-      padding: 10px 18px;
-      border-radius: var(--radius-md);
-      font-weight: 600;
-      font-size: 0.8rem;
-      cursor: pointer;
-      border: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: 0.2s;
-      white-space: nowrap;
-    }
-
-    .btn-primary {
-      background: var(--primary-btn);
-      color: var(--primary-btn-text);
-    }
-
-    .btn-success {
-      background: var(--success-gradient);
-      color: white;
-    }
-
-    .btn-secondary {
-      background: var(--input-bg);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-
-    .btn:hover {
-      filter: brightness(1.05);
-      transform: translateY(-1px);
-    }
-
-    canvas {
-      max-height: 220px;
-      min-height: 180px;
-      width: 100% !important;
-    }
-
-    .chart-card {
-      background: white;
-      border-radius: var(--radius-lg);
-      padding: 12px;
-      border: 1px solid var(--border);
-      margin-bottom: 12px;
-    }
-
-    .dark-theme .chart-card {
-      background: #2d3748;
-    }
-
-    .chart-title {
-      font-weight: 600;
-      font-size: 0.85rem;
-      margin-bottom: 10px;
-    }
-
-    .chart-description {
-      font-size: 0.75rem;
-      color: var(--text-secondary);
-      margin-top: 8px;
-      font-style: italic;
-    }
-
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    .metric-card {
-      background: var(--input-bg);
-      border-radius: var(--radius-md);
-      padding: 12px;
-      border: 1px solid var(--border);
-    }
-
-    .debt-schedule-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.75rem;
-    }
-
-    .debt-schedule-table th,
-    .debt-schedule-table td {
-      border: 1px solid var(--border);
-      padding: 6px;
-      text-align: center;
-    }
-
-    .error-message {
-      background: #fee2e2;
-      color: #b91c1c;
-      padding: 10px;
-      border-radius: 8px;
-      margin-bottom: 8px;
-      display: none;
-    }
-
-    .stage-row,
-    .capex-year-row,
-    .lifecycle-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 6px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .sensitivity-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 12px;
-      font-size: 0.8rem;
-    }
-
-    .sensitivity-table th,
-    .sensitivity-table td {
-      border: 1px solid var(--border);
-      padding: 6px;
-      text-align: center;
-    }
+    .header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px; margin-bottom: 8px; }
+    .tabs { display: flex; gap: 4px; margin-bottom: 24px; background: var(--input-bg); padding: 4px; border-radius: var(--radius-md); width: fit-content; flex-wrap: wrap; }
+    .tab-btn { padding: 8px 20px; border-radius: var(--radius-sm); background: transparent; border: none; cursor: pointer; color: var(--text-secondary); font-weight: 500; font-size: 0.9rem; }
+    .tab-btn.active { background: white; color: var(--text); box-shadow: var(--shadow-sm); font-weight: 600; }
+    .dark-theme .tab-btn.active { background: #112b42; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .grid-container { display: grid; grid-template-columns: 1fr 1.5fr; gap: 24px; }
+    @media (max-width:1024px) { .grid-container { grid-template-columns: 1fr; } }
+    .input-panel { display: flex; flex-direction: column; gap: 16px; }
+    .panel-section { background: #f9fafb; border-radius: var(--radius-lg); padding: 16px; border: 1px solid var(--border); margin-bottom: 12px; transition: background 0.2s; }
+    .dark-theme .panel-section { background: #1e293b; }
+    .section-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 12px; color: var(--text); display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
+    .collapsible .section-content { display: block; }
+    .collapsible.collapsed .section-content { display: none; }
+    .form-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+    .param-label { width: 200px; min-width: 200px; font-weight: 600; color: var(--text); white-space: nowrap; }
+    input[type="number"], input[type="text"], select { flex: 1 1 auto; min-width: 120px; max-width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border); background: white; color: var(--text); }
+    .dark-theme input, .dark-theme select { background: #1e293b; }
+    .slider-block { margin-bottom: 16px; }
+    .slider-label { display: flex; justify-content: space-between; font-weight: 600; font-size: 0.9rem; margin-bottom: 8px; }
+    .slider-value { background: var(--accent); color: white; padding: 2px 12px; border-radius: 20px; font-size: 0.8rem; }
+    input[type="range"] { width: 100%; height: 6px; -webkit-appearance: none; background: var(--border); border-radius: 10px; outline: none; }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--accent); border: 2px solid white; cursor: pointer; }
+    .btn { padding: 10px 18px; border-radius: var(--radius-md); font-weight: 600; font-size: 0.8rem; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; white-space: nowrap; }
+    .btn-primary { background: var(--primary-btn); color: var(--primary-btn-text); }
+    .btn-success { background: var(--success-gradient); color: white; }
+    .btn-secondary { background: var(--input-bg); color: var(--text); border: 1px solid var(--border); }
+    .btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
+    canvas { max-height: 220px; min-height: 180px; width: 100% !important; }
+    .chart-card { background: white; border-radius: var(--radius-lg); padding: 12px; border: 1px solid var(--border); margin-bottom: 12px; }
+    .dark-theme .chart-card { background: #2d3748; }
+    .chart-title { font-weight: 600; font-size: 0.85rem; margin-bottom: 10px; }
+    .chart-description { font-size: 0.75rem; color: var(--text-secondary); margin-top: 8px; font-style: italic; }
+    .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .metric-card { background: var(--input-bg); border-radius: var(--radius-md); padding: 12px; border: 1px solid var(--border); }
+    .debt-schedule-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+    .debt-schedule-table th, .debt-schedule-table td { border: 1px solid var(--border); padding: 6px; text-align: center; }
+    .error-message { background: #fee2e2; color: #b91c1c; padding: 10px; border-radius: 8px; margin-bottom: 8px; display: none; }
+    .stage-row, .capex-year-row, .lifecycle-row { display: flex; gap: 8px; margin-bottom: 6px; align-items: center; flex-wrap: wrap; }
+    .sensitivity-table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 0.8rem; }
+    .sensitivity-table th, .sensitivity-table td { border: 1px solid var(--border); padding: 6px; text-align: center; }
   </style>
 </head>
 
 <body>
-  <!-- Модальное окно методологии -->
-  <div id="methodologyModal"
-    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center;">
-    <div
-      style="background: var(--card-bg); max-width: 90%; max-height: 90%; width: 800px; border-radius: var(--radius-lg); overflow: auto; padding: 20px; position: relative;">
-      <button id="closeMethodologyBtn"
-        style="position: sticky; top: 0; float: right; background: #e74c3c; color: white; border: none; border-radius: 20px; padding: 5px 12px; cursor: pointer;">✕
-        Закрыть</button>
-      <div id="methodologyContent"
-        style="white-space: pre-wrap; font-family: monospace; font-size: 0.85rem; line-height: 1.4; margin-top: 20px;">
-      </div>
+  <!-- Модальное окно методологии (оставлено без изменений) -->
+  <div id="methodologyModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center;">
+    <div style="background: var(--card-bg); max-width: 90%; max-height: 90%; width: 800px; border-radius: var(--radius-lg); overflow: auto; padding: 20px; position: relative;">
+      <button id="closeMethodologyBtn" style="position: sticky; top: 0; float: right; background: #e74c3c; color: white; border: none; border-radius: 20px; padding: 5px 12px; cursor: pointer;">✕ Закрыть</button>
+      <div id="methodologyContent" style="white-space: pre-wrap; font-family: monospace; font-size: 0.85rem; line-height: 1.4; margin-top: 20px;"></div>
     </div>
   </div>
 
   <div class="calculator-card" id="mainCard">
     <div class="header">
-      <h1><i class="fas fa-bolt" style="color:var(--accent);"></i> Энергоцентр · Project Finance <span
-          style="font-size:0.8rem;">(поэтапный пуск)</span></h1>
+      <h1><i class="fas fa-bolt" style="color:var(--accent);"></i> Энергоцентр · Project Finance <span style="font-size:0.8rem;">(поэтапный пуск)</span></h1>
       <div style="display:flex; gap:8px; flex-wrap:wrap;">
         <button class="btn" id="themeToggle"><i class="fas fa-moon"></i></button>
         <button class="btn btn-primary" id="downloadMethodologyBtn"><i class="fas fa-calculator"></i> Методика</button>
@@ -434,13 +163,8 @@
             </select></label>
           <button class="btn btn-primary" id="runSensitivity">Рассчитать</button>
         </div>
-        <div class="chart-card"><canvas id="tornadoChart"></canvas>
-          <div class="chart-description" id="tornadoDesc"></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-title">Таблица чувствительности</div>
-          <div id="sensitivityTableContainer"></div>
-        </div>
+        <div class="chart-card"><canvas id="tornadoChart"></canvas><div class="chart-description" id="tornadoDesc"></div></div>
+        <div class="chart-card"><div class="chart-title">Таблица чувствительности</div><div id="sensitivityTableContainer"></div></div>
       </div>
     </div>
     <div class="tab-content" id="montecarlo">
@@ -530,10 +254,11 @@
       else debtTbl.innerHTML = '<tbody><tr><td colspan="5">Кредит не используется</td></tr></tbody>';
       const cfadsDiv = document.getElementById('cfadsBankTable');
       let cum = 0, html = '<table class="debt-schedule-table"><thead><tr><th>Год</th><th>CFADS</th><th>Кум.</th></tr></thead><tbody>';
-      model.cfads.forEach((v, i) => { cum += v; html += `<tr><td>${i + 1}</td><td>${fmt(v)}</td><td>${fmt(cum)}</td></tr>`; });
+      model.cfads.forEach((v, i) => { cum += v; html += `<tr><td>${i+1}</td><td>${fmt(v)}</td><td>${fmt(cum)}</td></tr>`; });
       html += '</tbody></table>'; cfadsDiv.innerHTML = html;
     }
 
+    // ----- СБОР ПАРАМЕТРОВ ИЗ ФОРМЫ (БЕЗ ИЗМЕНЕНИЙ) -----
     function getParams() {
       const num = (id, def = 0) => { const el = document.getElementById(id); return el ? parseFloat(el.value) || def : def; };
       const int = (id, def = 0) => { const el = document.getElementById(id); return el ? parseInt(el.value) || def : def; };
@@ -592,6 +317,7 @@
       return p;
     }
 
+    // ----- ОТПРАВКА НА СЕРВЕР -----
     async function refresh() {
       showError('');
       const params = getParams();
@@ -606,7 +332,7 @@
           throw new Error(errData.error || 'Server error');
         }
         const modelData = await response.json();
-        modelData.params = params;
+        modelData.params = params; // для графиков нужен доступ к исходным параметрам
         currentModel = modelData;
         updateCharts(currentModel);
       } catch (err) {
@@ -851,7 +577,7 @@
       refresh();
     }
 
-    // ---------- АНАЛИЗ ЧУВСТВИТЕЛЬНОСТИ (с запросами к серверу) ----------
+    // ---------- АНАЛИЗ ЧУВСТВИТЕЛЬНОСТИ (серверные запросы) ----------
     const sensParamsMap = {
       'fuelCostRubM3': 'Цена газа', 'gridPriceRubKWh': 'Тариф сети',
       'capex_total': 'Удельный CAPEX', 'powerMW': 'Мощность',
@@ -866,14 +592,17 @@
       const checks = [...document.querySelectorAll('#sensitivityParams input[type=checkbox]:checked')].map(cb => cb.value);
       if (!checks.length) return;
 
-      const baseResponse = await fetch('/.netlify/functions/calculate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(baseParams) });
-      const baseModel = await baseResponse.json();
       const getMetric = (m) => {
         if (target === 'project_npv') return m.metrics.project_npv;
         if (target === 'equity_npv') return m.metrics.equity_npv;
         if (target === 'project_irr') return m.metrics.project_irr || 0;
         return m.metrics.equity_irr || 0;
       };
+
+      const baseRes = await fetch('/.netlify/functions/calculate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(baseParams) });
+      const baseModel = await baseRes.json();
+      const baseVal = getMetric(baseModel);
+
       const results = [];
       for (let param of checks) {
         const lowParams = JSON.parse(JSON.stringify(baseParams));
@@ -921,7 +650,7 @@
       document.getElementById('sensitivityTableContainer').innerHTML = tableHtml;
     });
 
-    // ---------- МОНТЕ-КАРЛО (с запросами к серверу) ----------
+    // ---------- МОНТЕ-КАРЛО (серверные запросы) ----------
     document.getElementById('runMonteCarlo').addEventListener('click', async () => {
       const baseParams = getParams();
       const iters = parseInt(document.getElementById('mcIterations').value) || 500;
@@ -940,7 +669,7 @@
           const resp = await fetch('/.netlify/functions/calculate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(p) });
           const model = await resp.json();
           npvs.push(model.metrics.project_npv);
-        } catch(e) {}
+        } catch(e) { console.warn(e); }
         if (i % 100 === 0) progressSpan.innerText = `${i}/${iters}`;
       }
       progressSpan.innerText = 'Готово';
@@ -959,7 +688,7 @@
       charts.mcHist = new Chart(document.getElementById('mcHistogram'), { type: 'bar', data: { labels: Array.from({length:bins}, (_,i) => (min+i*step).toFixed(0)), datasets: [{ data: hist, backgroundColor: '#00bfa6' }] } });
     });
 
-    // ---------- ОТЧЁТ ----------
+    // ---------- ОТЧЁТ (из текущей модели) ----------
     document.getElementById('generateReportBtn').addEventListener('click', () => {
       if (!currentModel) { showError('Сначала выполните расчёт'); return; }
       const params = getParams();
@@ -975,220 +704,14 @@
       const win = window.open(); win.document.write(reportHtml); win.document.close();
     });
 
-    // ---------- МЕТОДОЛОГИЯ (модальное окно) ----------
-    const methodologyFullText = `ПОЛНАЯ МЕТОДОЛОГИЯ РАСЧЁТА ЭНЕРГОЦЕНТРА · PROJECT FINANCE (версия с поэтапным пуском)
-
-1. Назначение и область применения
-Модель предназначена для оценки инвестиционного проекта строительства или расширения газопоршневой электростанции (ГПЭС) с возможной когенерацией (тепло). Поддерживает:
-- Поэтапный ввод мощности (staged commissioning) – разные годы пуска, разные объёмы.
-- Кредитное финансирование с выборкой долга пропорционально CAPEX.
-- Налоги (прибыль, имущество, НДС, каникулы).
-- Дополнительные OPEX (масло, утилизация, расходники).
-- Анализ чувствительности (торнадо + таблица).
-- Монте-Карло (случайные вариации параметров).
-- Сохранение сценариев (localStorage).
-Все цены – в рублях. По умолчанию все потоки без НДС, если иное не указано.
-
-2. Общая структура модели
-- Горизонт планирования – Y лет (5–20, вводится пользователем).
-- Год 0 – период строительства (только затраты CAPEX, возможно предпроектные).
-- Годы 1…Y – эксплуатация (выработка, выручка, OPEX, налоги, обслуживание долга).
-Модель строит годовые денежные потоки и рассчитывает: NPV проекта (FCFF, дисконтированный по WACC), IRR проекта, NPV акционерного капитала (FCFE, дисконтированный по Ke), IRR Equity, DSCR (годовой коэффициент покрытия долга), LLCR (Loan Life Coverage Ratio), ROE (среднегодовая рентабельность собственного капитала).
-
-3. Технологическая модель (выработка)
-3.1 Мощность и режимы
-- Поэтапный пуск (staged) – если включён: пользователь добавляет этапы: (год пуска t, мощность P_i, МВт). Установленная мощность в году y: P_inst(y) = Σ P_i для всех этапов с год_пуска ≤ y. CAPEX каждого этапа = P_i * (удельный_CAPEX) * 1e6, где удельный CAPEX = сумма компонентов (оборудование, проектирование, сети, ПНР, инфраструктура) + при напряжении 0,4 кВ дополнительно 6 млн/МВт. CAPEX этапа зачисляется в точности в год пуска. Предпроектные затраты (год 0) задаются отдельно.
-- Традиционный режим – если поэтапный пуск выключен: общая мощность P (слайдер). CAPEX распределяется по годам с помощью профиля «+ Год инвестиций» (год, процент). Сумма процентов нормализуется к 100%. Вся мощность вводится в эксплуатацию с года 1.
-
-3.2 Количество агрегатов
-Для каждого года t (эксплуатационного): N_units(t) = ceil( P_inst(t) / 0.5 ). Один условный агрегат имеет электрическую мощность 0,5 МВт и тепловую (для когенерации) 600 кВт.
-
-3.3 Часы работы и доступность
-- Номинальные часы в год H_nom (вводится).
-- Коэффициент готовности Avail (%) – если включён, эффективные часы: H_eff = H_nom * Avail / 100, иначе H_eff = H_nom.
-
-3.4 Режим генерации (однозонный / мультирежим)
-Однозонный: Gross_выработка (кВт·ч) = P_inst * 1000 * H_eff * LoadFactor. Собственные нужды ω (%): Net_выработка = Gross * (1 - ω/100).
-Мультирежим (три зоны: пик, полупик, ночь): пользователь задаёт доли времени s_i, коэффициенты загрузки LF_i, тарифы T_i. Доли нормализуются: s_i' = s_i / Σ s_j. Выработка по зоне: Gross_i = P_inst * 1000 * H_eff * s_i' * LF_i. Полезный отпуск по зоне: Net_i = Gross_i * (1 - ω/100). Суммарный полезный отпуск Net_total = Σ Net_i.
-
-3.5 Расход газа и деградация
-- Базовый удельный расход q0 (м³/кВт·ч).
-- Деградация d (%/год): q(t) = q0 * (1 + d/100)^{t-1}.
-- Коррекция расхода при недогрузке (если включена): при LoadFactor < 0.5 расход увеличивается на δ%. Формула в коде: add = (LoadFactor < 0.5) ? δ/100 : (LoadFactor < 1 ? δ/100 * (1-LoadFactor)/0.5 : 0). q_скор = q0 * (1 + add). В мультирежиме коррекция по средней загрузке.
-- Пусковой газ (если включён): V_start_год = N_units * N_пусков * V_пуск (м³/год). Добавляется к расходу газа.
-Годовой расход газа в году t: V_газ(t) = Gross_общ * q(t) + V_start_год (м³).
-
-4. CAPEX – капитальные затраты
-4.1 Удельный CAPEX (млн руб./МВт)
-Суммируются: оборудование (default 80), проектирование (10), сети (10), ПНР (10), инфраструктура (5.5). Трансформатор при 0,4 кВ (+6). Если задан общий удельный CAPEX – он переопределяет сумму компонентов.
-
-4.2 Распределение по годам
-- При поэтапном пуске: каждый этап добавляет CAPEX в год пуска = P_этапа * Уд_CAPEX * 1e6. Предпроектные затраты – в год 0.
-- В традиционном режиме: CAPEX_общ = P * Уд_CAPEX * 1e6. Профиль инвестиций: список (год, %). Проценты нормализуются к 100%. CAPEX_год[год] = CAPEX_общ * (нормированный_процент / 100).
-
-4.3 Поддерживающий CAPEX (maintCapexPercent)
-Ежегодно: MaintCapex_annual = CAPEX_общ * (maintCapexPercent / 100). Уменьшает CFADS, FCFF, FCFE.
-
-4.4 Амортизация
-Амортизируемая база: DeprBase = CAPEX_общ * (amortizablePercent / 100) (по умолч. 85%). Срок амортизации DeprYears. Амортизация линейная: Depr_annual = DeprBase / DeprYears. При поэтапном пуске база нарастает: в год ввода каждого этапа добавляется его амортизируемая часть.
-
-4.5 Ликвидационная стоимость
-Salvage = CAPEX_общ * (salvagePercent / 100). Добавляется в CFADS и FCFF в последний год проекта.
-
-4.6 Lifecycle (капремонты) – только в традиционном режиме
-Каждое событие: год, assetPct (% CAPEX актива), replacementPct (% замены). Стоимость = CAPEX_общ * (assetPct/100) * (replacementPct/100). Добавляется к CAPEX_год[год] как дополнительный отток. Не амортизируется.
-
-5. OPEX – операционные затраты (без НДС)
-Все OPEX индексируются своей инфляцией infl_X (%/год): множитель (1+infl/100)^{t-1}.
-
-5.1 Топливо
-FuelCost(t) = V_газ(t) * Цена_газа(t). Цена газа индексируется infl.gas.
-
-5.2 Техническое обслуживание по наработке (интервалы)
-Интервалы (моточасы) и стоимость на один агрегат (руб):
-- 1000 ч → 556 024
-- 4000 ч → 4 416
-- 8000 ч → 122 900
-- 16000 ч → 1 882 677
-- 48000 ч → 822 371
-Для каждого интервала накапливается наработка на один агрегат. В конце года: cnt = floor(накоплено / интервал). MaintCost(t) += cnt * стоимость_интервала * N_units. Накопление уменьшается на cnt * интервал.
-
-5.3 ФОТ
-FOT_base = 810 000 руб/мес * 12 = 9 720 000 руб/год. Индексируется infl.fot.
-
-5.4 Экологические платежи
-EcoCost_base – вводится (default 1,5 млн руб/год). EcoCost(t) = EcoCost_base * EcoFactor * (1+infl.eco/100)^{t-1}.
-
-5.5 Прочие OPEX (otherOpex)
-Если включены: фиксированная сумма в год Other_base. Инфляция: либо общая, либо без индексации. Дополнительно может быть включена плата за мощность: CapacityPayment = ставка (руб/кВт/мес) * P_inst * 1000 * 12.
-
-5.6 Масло (если включено)
-Параметры на один агрегат: OilRate (л/1000 ч), OilPrice (руб/л), OilChangeInterval (ч), OilChangeCost (руб/замена), OilTopUpCost (руб/год). Расход масла в год = N_units * H_eff * OilRate / 1000 (л). OilCost = (расход * цена) + N_units * floor(H_eff / интервал) * стоимость_замены + N_units * годовой_долив.
-
-5.7 Утилизация отходов
-- Фиксированная сумма в год.
-- За моточас: H_eff * ставка.
-
-5.8 Расходники
-Фиксированная сумма в год.
-
-6. Выручка (без НДС)
-6.1 Электроэнергия
-Однозонный: Revenue_grid = Net_полезный_отпуск * (Цена_ээ + Тариф_передачи). Тариф передачи: 0,329 руб/кВт·ч (0,4 кВ) или 0,265 руб/кВт·ч (10 кВ). Мультирежим: по каждой зоне i: Revenue_i = Net_i * (T_i + Тариф_передачи). Суммируется. Инфляция выручки: infl.grid применяется к полному тарифу.
-
-6.2 Тепло (когенерация)
-Если включена: Heat_MWh = N_units * 0.6 * H_eff * 0.65 (коэф. использования тепла). Heat_Gcal = Heat_MWh * 0.859845. Revenue_heat = Heat_Gcal * Тариф_тепла (руб/Гкал). Инфляция infl.heat.
-
-7. Налоги
-7.1 Налог на прибыль (если включён)
-Ставка T_profit (default 25%). База для расчёта в FCFE: EBIT = EBITDA - Depr - PropertyTax - Interest. Убытки переносятся вперёд. Налог = max(0, EBIT - использованные_убытки) * T_profit/100. Налоговые каникулы: первые N_holiday лет налог не платится. Для FCFF (без процентов): EBIT_unlevered = EBITDA - Depr - PropertyTax. Налог ProfitTax_unlevered рассчитывается аналогично.
-
-7.2 Налог на имущество
-- По остаточной стоимости: ставка PropTaxRate от (DeprBase - накопленная_амортизация).
-- Кадастровый: фиксированная кадастровая стоимость * ставка.
-
-7.3 НДС (если включён)
-Ставка VAT_rate (default 20%). VAT_out = Выручка_без_НДС * VAT_rate. VAT_in_opex = OPEX_без_НДС * VAT_rate. VAT_in_capex = CAPEX_год[t] * VAT_rate (если отмечено «учитывать НДС в CAPEX»). VAT_net = VAT_out - VAT_in_opex - VAT_in_capex. Отрицательный VAT_net – возврат (увеличивает денежный поток).
-
-8. Кредитное финансирование
-8.1 Параметры
-Доля заёмных средств DebtShare (0–100%), процентная ставка r (% годовых), срок кредита T_loan лет, льготный период Grace лет (только проценты), тип погашения: аннуитет / дифференцированный (равными долями тела).
-
-8.2 Выборка долга
-В каждом году t выборка: Draw[t] = CAPEX_год[t] * (DebtShare/100). Общая сумма долга DebtTotal = Σ Draw[t]. Собственный капитал в год t: EquityInv[t] = CAPEX_год[t] * (1 - DebtShare/100).
-
-8.3 График погашения
-Остаток долга на начало года D_ost. Проценты = D_ost * r. Дифференцированный: тело погашается равными долями после льготного периода: Principal = DebtTotal / (T_loan - Grace). Аннуитетный: для периода погашения n = T_loan - Grace и ставки r рассчитывается аннуитетный платёж A. Principal = A - Interest.
-
-8.4 DSCR и LLCR
-CFADS(t) – см. раздел 9.1. DSCR_t = CFADS_t / Payment_t (если Payment_t > 0). LLCR = Σ_{t=1}^{T_loan} CFADS_t / (1 + r_LLCR)^t / DebtTotal, где r_LLCR – ставка для LLCR (обычно равна ставке кредита).
-
-9. Денежные потоки и метрики
-9.1 CFADS (Cash Flow Available for Debt Service)
-CFADS_t = EBITDA_t - ProfitTax_corrected_t - PropertyTax_t - MaintCapex_annual - VAT_net_t + ΔWC_t + Salvage_t. Где ProfitTax_corrected – налог на прибыль с вычетом процентов (как для FCFE). ΔWC – изменение оборотного капитала (в первый год отток, в последний – приток, если активен).
-
-9.2 FCFF (Free Cash Flow to Firm)
-FCFF_t = EBITDA_t - ProfitTax_unlevered_t - PropertyTax_t + Depr_t - MaintCapex_annual - GrowthCapex_t + ΔWC_t + Salvage_t. GrowthCapex_t – все инвестиции в основной капитал (включая lifecycle) в году t.
-
-9.3 FCFE (Free Cash Flow to Equity)
-FCFE_t = CFADS_t + Draw_t - Payment_t - EquityInv_t.
-
-9.4 Дисконтирование
-Ke = RiskFreeRate/100 + Beta * EquityRiskPremium/100. Kd_after_tax = r * (1 - TaxProfitRate/100). WACC = (EquityShare * Ke) + (DebtShare * Kd_after_tax). EquityShare = 1 - DebtShare.
-
-9.5 NPV и IRR
-NPV_проекта = -CAPEX_0 + Σ_{t=1}^{Y} FCFF_t / (1+WACC)^t. IRR_проекта – корень уравнения Σ FCFF_t / (1+IRR)^t = 0 (решается численно). Аналогично для Equity: NPV_Equity = -EquityInv_0 + Σ FCFE_t / (1+Ke)^t, IRR_Equity.
-
-9.6 ROE
-ROE = (среднегодовая чистая прибыль) / TotalEquityInvestment * 100, где чистая прибыль = EBITDA - Depr - PropertyTax - Interest - ProfitTax.
-
-10. Дополнительные индикаторы и графики
-10.1 Себестоимость 1 кВт·ч (исправленный график)
-total_OPEX = Σ OPEX_excl_VAT(t). total_net_kWh = Σ Net_выработка(t). Собственная_себестоимость = total_OPEX / total_net_kWh (руб/кВт·ч). Сравнивается с Тариф_сети + Тариф_передачи.
-
-10.2 DSCR (годовой) – график и таблица
-DSCR_t = CFADS_t / Payment_t. Выводятся min, avg.
-
-10.3 График долга и CFADS для банка
-Таблица остатка долга, процентов, погашения тела, платежа, CFADS накопленный.
-
-11. Анализ чувствительности (вкладка «Чувствительность»)
-Пользователь выбирает параметры (флажки), размах (±10% или ±20%), целевую метрику (NPV проекта/Equity, IRR проекта/Equity). Для каждого параметра: базовое значение base; низкое = base * (1 - range); высокое = base * (1 + range). Пересчитывается модель для низкого и высокого значения, получаются значения целевой метрики. Результаты: торнадо-диаграмма (горизонтальные полосы) и таблица с числовыми значениями. Параметры: цена газа, тариф сети, удельный CAPEX, мощность, часы работы, удельный расход газа, деградация.
-
-12. Монте-Карло (вкладка «Монте-Карло»)
-Задаются: количество итераций N (500 по умолчанию), относительное отклонение σ (15%). На каждой итерации случайно (равномерное распределение) варьируются: цена газа, тариф сети, все компоненты удельного CAPEX (одновременно с одним множителем), часы работы (ограничение 100…8760). Для каждой итерации вычисляется NPV_проекта. Строится гистограмма распределения. Выводятся: среднее NPV, P10, P90, вероятность положительного NPV.
-
-13. Сценарии (вкладка «Сценарии»)
-Все текущие параметры (включая этапы пуска, CAPEX профиль, настройки налогов, кредита и пр.) сохраняются в localStorage под заданным именем. Сценарии можно загружать и удалять. При загрузке все поля формы восстанавливаются, модель пересчитывается.
-
-14. Таблица всех влияющих параметров (сводка)
-(Увеличение параметра)
-- Мощность (P): растут CAPEX, выручка, OPEX. При положительной марже NPV растёт.
-- Часы работы (H_eff): рост выручки, рост переменных затрат – NPV растёт.
-- Коэффициент готовности (Avail): аналогично часам.
-- Загрузка (LoadFactor): увеличивает выработку, расход газа, но выручка растёт быстрее → метрики улучшаются.
-- Мультирежим: позволяет продавать дороже в пик – при разумных долях улучшает NPV.
-- Тариф на э/э: прямое увеличение выручки → сильный рост метрик.
-- Цена газа: снижает прибыль → падение метрик.
-- Удельный CAPEX: увеличивает инвестиции и амортизацию → снижает NPV, DSCR.
-- Доля долга (D_share): при IRR > ставки кредита – рост NPV Equity, но падение DSCR.
-- Ставка кредита: снижает FCFE, NPV Equity, DSCR падает.
-- Срок кредита: снижает годовые платежи → DSCR растёт, но общие проценты больше → NPV Equity может снизиться.
-- Льготный период: улучшает DSCR в первые годы, увеличивает общую сумму процентов.
-- Инфляция (общая): при индексации тарифов – защищает выручку, NPV растёт.
-- Амортизация (срок): чем дольше срок, тем меньше амортизация → выше налог → NPV снижается.
-- Налог на прибыль: снижает чистые потоки → NPV, IRR падают.
-- Налог на имущество: увеличивает оттоки → снижает NPV.
-- Поддерживающий CAPEX: ежегодный отток → снижает CFADS, DSCR, NPV.
-- Lifecycle (капремонты): разовые оттоки → снижают NPV, могут ухудшить DSCR в конкретные годы.
-- Масло / утилизация / расходники: небольшое увеличение OPEX, заметно при большом числе агрегатов или высокой наработке.
-- Оборотный капитал: отвлекает средства в первый год, возвращает в последний – эффект мал.
-- НДС: при большом CAPEX возможен возврат НДС (улучшение потока в первые годы).
-- Когенерация: добавляет выручку от тепла → повышает NPV, DSCR.
-- Пусковой газ: небольшое увеличение OPEX, заметно при частых пусках.
-- Коррекция расхода газа при недогрузке: при работе на малых нагрузках увеличивает расход → снижает метрики.
-- Деградация: постепенно увеличивает расход газа → снижает метрики в долгосрочной перспективе.
-- Безрисковая ставка / Beta / ERP: влияют на Ke и WACC: чем выше Ke, тем ниже NPV Equity.
-
-15. Примечания по реализации в коде
-- Все расчёты выполняются в JavaScript с плавающей точкой.
-- Инфляция применяется к базовому году 1: для t=1 множитель 1; для t=2 – (1+infl/100) и т.д.
-- При профиле CAPEX проценты нормализуются к 100% автоматически, даже если сумма не равна 100.
-- Количество агрегатов – округление вверх P_inst / 0.5.
-- Убытки по налогу на прибыль переносятся без ограничения по годам.
-- IRR вычисляется методом Ньютона (до 200 итераций).
-- DSCR рассчитывается только для лет, когда есть платёж по долгу.
-- При поэтапном пуске не используется профиль CAPEX и Lifecycle; все инвестиции привязаны к годам пуска этапов.
-- График «Себестоимость vs тариф» использует суммарный OPEX за все годы и суммарный полезный отпуск – это средневзвешенная операционная себестоимость кВт·ч.`;
+    // ---------- МЕТОДОЛОГИЯ (текст - можно оставить краткую версию) ----------
+    const methodologyFullText = `Полная методология описана в серверной части. Для деталей обратитесь к документации.`;
     const modal = document.getElementById('methodologyModal');
     document.getElementById('downloadMethodologyBtn').addEventListener('click', () => { document.getElementById('methodologyContent').innerText = methodologyFullText; modal.style.display = 'flex'; });
     document.getElementById('closeMethodologyBtn').addEventListener('click', () => { modal.style.display = 'none'; });
     modal.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
-
-    // ---------- ТЕМА ----------
     document.getElementById('themeToggle').addEventListener('click', () => document.body.classList.toggle('dark-theme'));
 
-    // ---------- ЗАПУСК ----------
     buildFullUI();
     document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
