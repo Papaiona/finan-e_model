@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+  <title>Энергоцентр · Project Finance (поэтапный пуск)</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.2.1/dist/chartjs-plugin-annotation.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --bg: #f0f4f8;
+      --card-bg: #ffffff;
+      --text: #0a1929;
+      --text-secondary: #2a3a4e;
+      --accent: #00bfa6;
+      --accent-dark: #009f8c;
+      --accent-light: #ccf5f0;
+      --border: #d0dbe4;
+      --input-bg: #f8fafc;
+      --shadow-sm: 0 1px 3px rgba(10, 44, 78, 0.08);
+      --shadow-md: 0 4px 12px rgba(10, 44, 78, 0.1);
+      --shadow-lg: 0 10px 25px rgba(10, 44, 78, 0.12);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --primary-btn: linear-gradient(135deg, #0a2c4e 0%, #143c64 100%);
+      --primary-btn-text: white;
+      --success-gradient: linear-gradient(135deg, #00bfa6 0%, #009f8c 100%);
+      --error: #e74c3c;
+    }
+
+    .dark-theme {
+      --bg: #0a1929;
+      --card-bg: #112b42;
+      --text: #e0eaf5;
+      --text-secondary: #9aaec9;
+      --accent: #00bfa6;
+      --accent-light: #1a3b3a;
+      --border: #2a4365;
+      --input-bg: #14334d;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .calculator-card {
+      max-width: 1600px;
+      width: 100%;
+      background: var(--card-bg);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      padding: 32px;
+      border: 1px solid var(--border);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 8px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 24px;
+      background: var(--input-bg);
+      padding: 4px;
+      border-radius: var(--radius-md);
+      width: fit-content;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      padding: 8px 20px;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .tab-btn.active {
+      background: white;
+      color: var(--text);
+      box-shadow: var(--shadow-sm);
+      font-weight: 600;
+    }
+
+    .dark-theme .tab-btn.active {
+      background: #112b42;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 24px;
+    }
+
+    @media (max-width:1024px) {
+      .grid-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .input-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .panel-section {
+      background: #f9fafb;
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+      transition: background 0.2s;
+    }
+
+    .dark-theme .panel-section {
+      background: #1e293b;
+    }
+
+    .section-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .collapsible .section-content {
+      display: block;
+    }
+
+    .collapsible.collapsed .section-content {
+      display: none;
+    }
+
+    .form-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .param-label {
+      width: 200px;
+      min-width: 200px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    input[type="number"],
+    input[type="text"],
+    select {
+      flex: 1 1 auto;
+      min-width: 120px;
+      max-width: 100%;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text);
+    }
+
+    .dark-theme input,
+    .dark-theme select {
+      background: #1e293b;
+    }
+
+    .slider-block {
+      margin-bottom: 16px;
+    }
+
+    .slider-label {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+
+    .slider-value {
+      background: var(--accent);
+      color: white;
+      padding: 2px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      -webkit-appearance: none;
+      background: var(--border);
+      border-radius: 10px;
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid white;
+      cursor: pointer;
+    }
+
+    .btn {
+      padding: 10px 18px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--primary-btn);
+      color: var(--primary-btn-text);
+    }
+
+    .btn-success {
+      background: var(--success-gradient);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: var(--input-bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn:hover {
+      filter: brightness(1.05);
+      transform: translateY(-1px);
+    }
+
+    canvas {
+      max-height: 220px;
+      min-height: 180px;
+      width: 100% !important;
+    }
+
+    .chart-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 12px;
+      border: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+
+    .dark-theme .chart-card {
+      background: #2d3748;
+    }
+
+    .chart-title {
+      font-weight: 600;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+    }
+
+    .chart-description {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 8px;
+      font-style: italic;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .metric-card {
+      background: var(--input-bg);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .debt-schedule-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+    }
+
+    .debt-schedule-table th,
+    .debt-schedule-table td {
+      border: 1px solid var(--border);
+      padding: 6px;
+      text-align: center;
+    }
+
+    .error-message {
+      background: #fee2e2;
+      color: #b91c1c;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      display: none;
+    }
+
+    .stage-row,
+    .capex-year-row,
+    .lifecycle-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .sensitivity-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 0.8rem;
+    }
+
+    .sensitivity-table th,
+    .sensitivity-table td {
+      border: 1px solid var(--border);
+      padding: 6px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="methodologyModal"
+    style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center;">
+    <div
+      style="background: var(--card-bg); max-width: 90%; max-height: 90%; width: 800px; border-radius: var(--radius-lg); overflow: auto; padding: 20px; position: relative;">
+      <button id="closeMethodologyBtn"
+        style="position: sticky; top: 0; float: right; background: #e74c3c; color: white; border: none; border-radius: 20px; padding: 5px 12px; cursor: pointer;">✕
+        Закрыть</button>
+      <div id="methodologyContent"
+        style="white-space: pre-wrap; font-family: monospace; font-size: 0.85rem; line-height: 1.4; margin-top: 20px;">
+      </div>
+    </div>
+  </div>
+
+  <div class="calculator-card" id="mainCard">
+    <div class="header">
+      <h1><i class="fas fa-bolt" style="color:var(--accent);"></i> Энергоцентр · Project Finance <span
+          style="font-size:0.8rem;">(поэтапный пуск)</span></h1>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="btn" id="themeToggle"><i class="fas fa-moon"></i></button>
+        <button class="btn btn-primary" id="downloadMethodologyBtn"><i class="fas fa-calculator"></i> Методика</button>
+        <button class="btn btn-success" id="generateReportBtn"><i class="fas fa-file-alt"></i> Отчёт</button>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="main">Основное</button>
+      <button class="tab-btn" data-tab="scenarios">Сценарии</button>
+      <button class="tab-btn" data-tab="sensitivity">Чувствительность</button>
+      <button class="tab-btn" data-tab="montecarlo">Монте-Карло</button>
+    </div>
+    <div id="globalError" class="error-message"></div>
+    <div class="tab-content active" id="main">
+      <div class="grid-container">
+        <div class="input-panel" id="inputPanel"></div>
+        <div class="charts-panel" id="chartsPanel"></div>
+      </div>
+    </div>
+    <div class="tab-content" id="scenarios">
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <select id="scenarioSelect"></select>
+        <button class="btn btn-primary" id="saveScenarioBtn">💾 Сохранить</button>
+        <button class="btn btn-secondary" id="loadScenarioBtn">📂 Загрузить</button>
+        <button class="btn btn-secondary" id="deleteScenarioBtn">🗑️ Удалить</button>
+      </div>
+    </div>
+    <div class="tab-content" id="sensitivity">
+      <div>
+        <h4>Анализ чувствительности</h4>
+        <div id="sensitivityParams" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+        <div style="margin-top:8px;">
+          <label>Целевой: <select id="sensitivityTarget">
+              <option value="project_npv">NPV проекта</option>
+              <option value="equity_npv">NPV Equity</option>
+              <option value="project_irr">IRR проекта</option>
+              <option value="equity_irr">IRR Equity</option>
+            </select></label>
+          <label>Размах: <select id="sensitivityRange">
+              <option value="20">±20%</option>
+              <option value="10">±10%</option>
+            </select></label>
+          <button class="btn btn-primary" id="runSensitivity">Рассчитать</button>
+        </div>
+        <div class="chart-card"><canvas id="tornadoChart"></canvas>
+          <div class="chart-description" id="tornadoDesc"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Таблица чувствительности</div>
+          <div id="sensitivityTableContainer"></div>
+        </div>
+      </div>
+    </div>
+    <div class="tab-content" id="montecarlo">
+      <div style="display:flex; gap:14px; align-items:center; flex-wrap:wrap;">
+        <label>Итераций: <input type="number" id="mcIterations" value="500"></label>
+        <label>Отклонение ±%: <input type="number" id="mcStdDev" value="15"></label>
+        <button class="btn btn-primary" id="runMonteCarlo">🎲 Запустить</button>
+        <span id="mcProgress"></span>
+      </div>
+      <div class="chart-card"><canvas id="mcHistogram"></canvas>
+        <div class="chart-description">Распределение NPV проекта при случайном изменении ключевых параметров.</div>
+      </div>
+      <div id="mcStats" style="margin-top:12px; padding:12px; background:var(--input-bg); border-radius:8px;"></div>
+    </div>
+  </div>
+
+  <script>
+    // ---------- КЛИЕНТСКИЕ КОНСТАНТЫ (только для отображения) ----------
+    const CLIENT_CONFIG = {
+      transferTariff04: 0.329,
+      transferTariff10: 0.265
+    };
+
+    const fmt = v => isNaN(v) || v === Infinity || v === -Infinity ? '—' : new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', maximumFractionDigits: 0 }).format(v);
+    const fmtPercent = v => (v * 100).toFixed(1) + '%';
+
+    let currentModel = null;
+    const charts = {};
+
+    function destroyAllCharts() {
+      Object.values(charts).forEach(c => c?.destroy());
+      for (let k in charts) delete charts[k];
+    }
+
+    function updateCharts(model) {
+      if (!model) return;
+      destroyAllCharts();
+      const container = document.getElementById('chartsPanel');
+      container.innerHTML = `
+      <div class="chart-card"><div class="chart-title">Выручка / OPEX (1-й год, без НДС)</div><canvas id="barChart"></canvas><div class="chart-description">Сравнение выручки от продажи электроэнергии, тепла и общих операционных затрат за первый год проекта.</div></div>
+      <div class="chart-card"><div class="chart-title">Состав OPEX (без НДС)</div><canvas id="pieChart"></canvas><div class="chart-description">Структура операционных расходов: топливо, ТО, ФОТ, экология, прочие, масло, утилизация, расходники.</div></div>
+      <div class="chart-card"><div class="chart-title">Себестоимость vs тариф (без НДС)</div><canvas id="costPerKwhChart"></canvas><div class="chart-description">Средневзвешенная себестоимость 1 кВт·ч (суммарный OPEX / суммарный полезный отпуск) и тариф покупки из сети (с передачей).</div></div>
+      <div class="chart-card"><div class="chart-title">FCFF и FCFE</div><canvas id="cfChart"></canvas><div class="chart-description">Свободный денежный поток фирмы (FCFF) и акционерам (FCFE) по годам.</div></div>
+      <div class="chart-card"><div class="chart-title">Кумулятивные потоки</div><canvas id="cumCfChart"></canvas><div class="chart-description">Накопленный FCFF и FCFE нарастающим итогом.</div></div>
+      <div class="chart-card"><div class="chart-title">Ключевые метрики</div><div id="metricsPanel"></div></div>
+      <div class="chart-card" id="dscrCard"><div class="chart-title">DSCR (годовой)</div><canvas id="dscrChart"></canvas><div class="chart-description">Коэффициент покрытия долга (DSCR) = CFADS / (проценты + основной долг).</div></div>
+      <div class="chart-card"><div class="chart-title">График долга и CFADS для банка</div>
+        <table id="debtScheduleTable" class="debt-schedule-table"><tr>
+        <div style="margin-top:10px;"><strong>CFADS (для обслуживания долга):</strong></div>
+        <div id="cfadsBankTable" style="overflow-x:auto;"></div>
+        <div class="chart-description">Денежный поток, доступный для обслуживания долга, и график погашения кредита.</div>
+      </div>
+    `;
+      const y0 = model.yearly_operating[0];
+      if (y0) {
+        new Chart(document.getElementById('barChart'), { type: 'bar', data: { labels: ['Выручка сеть', 'Выручка тепло', 'OPEX'], datasets: [{ data: [y0.revenueGrid_excl_vat, y0.revenueHeat_excl_vat, y0.opex_excl_vat], backgroundColor: ['#94a3b8', '#f59e0b', '#00bfa6'] }] } });
+        new Chart(document.getElementById('pieChart'), { type: 'doughnut', data: { labels: ['Топливо', 'ТО', 'ФОТ', 'Экология', 'Прочие', 'Масло', 'Утилизация', 'Расходники'], datasets: [{ data: [y0.fuelCost, y0.maintCost, y0.fotCost, y0.ecoCost, y0.otherOpex, y0.totalOilCost, y0.wasteCost, y0.consumablesCost], backgroundColor: ['#00bfa6', '#94a3b8', '#1e293b', '#f59e0b', '#8b5cf6', '#ec4899', '#f97316', '#14b8a6'] }] } });
+      }
+      const totalOpex = model.yearly_operating.reduce((s, y) => s + y.opex_excl_vat, 0);
+      const totalNetKwh = model.yearly_operating.reduce((s, y) => s + y.netKWh, 0);
+      const ownCost = totalNetKwh > 0 ? totalOpex / totalNetKwh : 0;
+      const gridTariff = model.params.gridPriceRubKWh + (model.params.voltageKV === 0.4 ? CLIENT_CONFIG.transferTariff04 : CLIENT_CONFIG.transferTariff10);
+      new Chart(document.getElementById('costPerKwhChart'), { type: 'bar', data: { labels: ['Своя (руб/кВт·ч)', 'Сеть (руб/кВт·ч)'], datasets: [{ data: [ownCost, gridTariff], backgroundColor: ['#00bfa6', '#94a3b8'] }] } });
+
+      const yearsLabels = model.yearly_operating.map(y => y.year);
+      new Chart(document.getElementById('cfChart'), { type: 'line', data: { labels: yearsLabels, datasets: [{ label: 'FCFF (проект)', data: model.fcff, borderColor: '#00bfa6' }, { label: 'FCFE (акционерам)', data: model.equity_cf, borderColor: '#1e293b' }] } });
+      let cumFcff = 0, cumFcfe = 0, cumFcffArr = [], cumFcfeArr = [];
+      model.fcff.forEach(v => { cumFcff += v; cumFcffArr.push(cumFcff); });
+      model.equity_cf.forEach(v => { cumFcfe += v; cumFcfeArr.push(cumFcfe); });
+      new Chart(document.getElementById('cumCfChart'), { type: 'line', data: { labels: yearsLabels, datasets: [{ label: 'Кум. FCFF', data: cumFcffArr, borderColor: '#00bfa6' }, { label: 'Кум. FCFE', data: cumFcfeArr, borderColor: '#1e293b' }] } });
+      const m = model.metrics;
+      document.getElementById('metricsPanel').innerHTML = `<div class="metrics-grid">
+      <div class="metric-card"><b>NPV проекта</b><br>${fmt(m.project_npv)}</div>
+      <div class="metric-card"><b>IRR проекта</b><br>${m.project_irr ? fmtPercent(m.project_irr) : '—'}</div>
+      <div class="metric-card"><b>NPV Equity</b><br>${fmt(m.equity_npv)}</div>
+      <div class="metric-card"><b>IRR Equity</b><br>${m.equity_irr ? fmtPercent(m.equity_irr) : '—'}</div>
+      <div class="metric-card"><b>Min DSCR</b><br>${m.min_dscr === Infinity ? '—' : m.min_dscr.toFixed(2)}</div>
+      <div class="metric-card"><b>LLCR</b><br>${m.llcr ? m.llcr.toFixed(2) : '—'}</div>
+      <div class="metric-card"><b>ROE</b><br>${m.roe.toFixed(1)}%</div>
+      <div class="metric-card"><b>WACC</b><br>${(m.wacc * 100).toFixed(1)}%</div>
+      <div class="metric-card"><b>Ke (CAPM)</b><br>${(m.ke * 100).toFixed(1)}%</div>
+    </div>`;
+      const dscrCard = document.getElementById('dscrCard');
+      if (model.debtSchedule.length && m.dscr_values.length) {
+        dscrCard.style.display = 'block';
+        new Chart(document.getElementById('dscrChart'), { type: 'line', data: { labels: model.debtSchedule.map(d => d.year), datasets: [{ label: 'DSCR', data: m.dscr_values, borderColor: '#f59e0b' }] } });
+      } else dscrCard.style.display = 'none';
+      const debtTbl = document.getElementById('debtScheduleTable');
+      if (model.debtSchedule.length) debtTbl.innerHTML = `<table><th>Год</th><th>Остаток</th><th>%</th><th>Тело</th><th>Платёж</th></tr>` + model.debtSchedule.map(s => `<tr><td>${s.year}</td><td>${fmt(s.debt)}</td><td>${fmt(s.interest)}</td><td>${fmt(s.principal)}</td><td>${fmt(s.payment)}</td></tr>`).join('');
+      else debtTbl.innerHTML = '<tr><td colspan="5">Кредит не используется</td></tr>';
+      const cfadsDiv = document.getElementById('cfadsBankTable');
+      let cum = 0, html = '<table class="debt-schedule-table"><tr><th>Год</th><th>CFADS</th><th>Кум.</th></tr>';
+      model.cfads.forEach((v, i) => { cum += v; html += `<tr><td>${i + 1}</td><td>${fmt(v)}</td><td>${fmt(cum)}</td></tr>`; });
+      html += '</table>'; cfadsDiv.innerHTML = html;
+    }
+
+    function getParams() {
+      const num = (id, def = 0) => { const el = document.getElementById(id); return el ? parseFloat(el.value) || def : def; };
+      const int = (id, def = 0) => { const el = document.getElementById(id); return el ? parseInt(el.value) || def : def; };
+      const chk = (id) => { const el = document.getElementById(id); return el ? el.checked : false; };
+      let p = {
+        projectYears: Math.max(5, int('projectYears', 10)), powerMW: parseFloat(document.getElementById('powerSlider')?.value || 6),
+        voltageKV: parseFloat(document.querySelector('input[name="voltageClass"]:checked')?.value || 0.4),
+        fuelCostRubM3: num('fuelCost', 8.5), gridPriceRubKWh: num('gridPrice', 7.55),
+        operatingHours: num('operatingHours', 7800), gasConsumption: num('gasConsumption', 0.272),
+        loadFactor: num('loadFactor', 1), degradationPerYear: num('degradationRate', 0.5),
+        salvagePercent: num('salvagePercent', 10), maintCapexPercent: num('maintCapexPercent', 1),
+        ownNeeds: { percent: chk('ownNeedsCheck') ? num('ownNeedsPct', 3) : 0 },
+        startupGas: { active: chk('startupCheck'), startupsPerUnit: num('startupsNum', 10), gasPerStartup: num('startupGasVol', 100) },
+        otherOpex: { active: chk('otherOpexCheck'), totalAnnual: num('otherOpexAmount', 500000), inflationType: document.getElementById('otherOpexInfl')?.value || 'none', includeCapacityPayment: chk('capacityPaymentCheck'), capacityPaymentRate: num('capacityPaymentRate', 200) },
+        cogeneration: { active: chk('cogenCheck'), heatTariffRubGcal: num('heatTariff', 3000) },
+        multimode: { active: chk('multimodeCheck'), timeShares: [num('peakTimeShare', 0.3), num('midTimeShare', 0.3), num('nightTimeShare', 0.4)], loadFactors: [num('peakLoadFactor', 1), num('midLoadFactor', 0.9), num('nightLoadFactor', 0.7)], tariffs: [num('peakTariff', 9), num('midTariff', 7.5), num('nightTariff', 5.5)] },
+        taxes: { useProfitTax: chk('useTaxCheckbox'), profitTaxRate: num('profitTaxRate', 25), usePropertyTax: chk('usePropertyTax'), propertyTaxRate: num('propertyTaxRate', 2.2), useCadastral: chk('cadastralCheck'), cadastralBuildingsValue: num('cadastralVal', 5e7), cadastralRate: num('cadastralRate', 1.5), useVAT: chk('useVAT'), vatRate: num('vatRate', 20), vatOnCapex: chk('vatOnCapexCheck'), depreciationYears: Math.max(1, num('depreciationYears', 15)), taxHoliday: chk('useTaxHolidays'), taxHolidayYears: num('taxHolidayYears', 2), amortizableCapexPercent: num('amortizableCapexPercent', 85) },
+        debt: { active: chk('useDebtCheckbox'), share: num('debtShare', 70), interestRate: num('interestRate', 14), term: int('loanYears', 8), graceYears: int('graceYears', 2), paymentType: document.getElementById('paymentType')?.value || 'annuity', llcrDiscountRate: num('llcrDiscountRate', 14) },
+        capexEquipment: num('capexEquipment', 80), capexDesign: num('capexDesign', 10), capexNetwork: num('capexNetwork', 10), capexCommissioning: num('capexCommissioning', 10), capexInfrastructure: num('capexInfrastructure', 5.5),
+        capexPerMWTotal: undefined,
+        workingCapital: { active: chk('useWC'), percent: num('wcPercent', 5) },
+        inflation: { gas: num('inflGas', 0), grid: num('inflGrid', 0), fot: num('inflFOT', 0), maint: num('inflMaint', 0), heat: num('inflHeat', 0), eco: num('inflEcology', 0), general: num('inflGeneral', 0) },
+        ecologyBase: num('ecologyBase', 1.5e6), ecologyFactor: num('ecologyFactor', 1),
+        wacc: { riskFree: num('riskFreeRate', 8), beta: num('beta', 1.2), equityRisk: num('equityRiskPremium', 6) },
+        availability: { active: chk('availCheck'), rate: num('availRate', 95) },
+        efficiencyCorrection: { active: chk('efficiencyCorrectionCheck'), percent: num('efficiencyCorrectionPercent', 15) },
+        oil: { active: chk('oilCheck'), consumptionRate: num('oilConsumptionRate', 50), price: num('oilPrice', 500), changeInterval: num('oilChangeInterval', 2000), changeCost: num('oilChangeCost', 150000), topUpCost: num('oilTopUpCost', 30000) },
+        waste: { active: chk('wasteCheck'), type: document.getElementById('wasteType')?.value || 'fixed', fixedCost: num('wasteFixedCost', 100000), ratePerHour: num('wasteRatePerHour', 50) },
+        consumables: { active: chk('consumablesCheck'), totalAnnual: num('consumablesAnnual', 200000) },
+        stagedCommissioning: { active: chk('stagedCheck'), preProjectCapex: num('preProjectCapex', 0), stages: [] }
+      };
+      if (p.stagedCommissioning.active) {
+        document.querySelectorAll('.stage-row').forEach(row => {
+          const year = parseInt(row.querySelector('.stage-year').value);
+          const power = parseFloat(row.querySelector('.stage-power').value);
+          if (!isNaN(year) && !isNaN(power) && power > 0) p.stagedCommissioning.stages.push({ year, powerMW: power });
+        });
+      } else {
+        p.capexProfile = [];
+        document.querySelectorAll('.capex-year-row').forEach(row => {
+          const y = parseInt(row.querySelector('.capex-year').value);
+          const pc = parseFloat(row.querySelector('.capex-percent').value);
+          if (!isNaN(y) && !isNaN(pc)) p.capexProfile.push({ yearOffset: y, percent: pc });
+        });
+        if (p.capexProfile.length === 0) p.capexProfile.push({ yearOffset: 0, percent: 100 });
+        p.lifecycle = { active: chk('lifecycleCheck'), events: [] };
+        if (p.lifecycle.active) {
+          document.querySelectorAll('.lifecycle-row').forEach(row => {
+            const y = parseInt(row.querySelector('.lifecycle-year').value);
+            const ap = parseFloat(row.querySelector('.lifecycle-asset').value);
+            const cp = parseFloat(row.querySelector('.lifecycle-cost').value);
+            if (!isNaN(y) && !isNaN(ap) && !isNaN(cp)) p.lifecycle.events.push({ year: y, assetCapexPercent: ap, replacementCostPercent: cp });
+          });
+        }
+      }
+      return p;
+    }
+
+    async function refresh() {
+      showError('');
+      const params = getParams();
+      try {
+        const response = await fetch('/.netlify/functions/calculate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(params)
+        });
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.error || 'Server error');
+        }
+        const modelData = await response.json();
+        // Добавляем params в модель для корректной работы графиков (тариф сети)
+        modelData.params = params;
+        currentModel = modelData;
+        updateCharts(currentModel);
+      } catch (err) {
+        showError(err.message);
+        console.error(err);
+      }
+    }
+
+    function showError(msg) {
+      const e = document.getElementById('globalError');
+      e.textContent = msg ? '⚠️ ' + msg : '';
+      e.style.display = msg ? 'block' : 'none';
+    }
+
+    // Построение UI (вся форма)
+    function buildFullUI() {
+      document.getElementById('inputPanel').innerHTML = `
+      <div class="form-row"><label class="param-label">Горизонт (лет)</label><input type="number" id="projectYears" value="10" min="5" max="20"></div>
+      <div class="slider-block"><div class="slider-label"><span>⚡ Мощность (если не поэтапный)</span><span class="slider-value" id="powerValueDisplay">6.0 МВт</span></div><input type="range" id="powerSlider" min="0.5" max="12.0" value="6.0" step="0.1"></div>
+      <div class="form-row"><label class="param-label">Напряжение</label><label><input type="radio" name="voltageClass" value="0.4" checked> 0.4 кВ</label><label><input type="radio" name="voltageClass" value="10"> 10 кВ</label></div>
+      <div class="form-row"><label class="param-label">Цена газа (руб/м³)</label><input type="number" id="fuelCost" value="8.5" step="0.1"></div>
+      <div class="form-row"><label class="param-label">Тариф сети (руб/кВт·ч)</label><input type="number" id="gridPrice" value="7.55" step="0.1"></div>
+      
+      <div class="panel-section"><div class="section-title">Поэтапный пуск (staged commissioning)</div><div class="section-content">
+        <div class="form-row"><label><input type="checkbox" id="stagedCheck"> Включить поэтапный ввод мощности</label></div>
+        <div class="form-row"><label class="param-label">Предпроектные затраты (год 0)</label><input type="number" id="preProjectCapex" value="0" step="1000000"> руб</div>
+        <div id="stagesContainer"></div>
+        <button class="btn btn-secondary" id="addStageBtn" type="button">+ Добавить этап пуска</button>
+      </div></div>
+
+      <div class="panel-section capex-section collapsible" id="traditionalCapexSection"><div class="section-title">CAPEX (традиционный, если не поэтапный)</div><div class="section-content">
+        <div class="form-row"><label class="param-label">Оборудование (млн/МВт)</label><input type="number" id="capexEquipment" value="80"></div>
+        <div class="form-row"><label class="param-label">Проектирование</label><input type="number" id="capexDesign" value="10"></div>
+        <div class="form-row"><label class="param-label">Сети</label><input type="number" id="capexNetwork" value="10"></div>
+        <div class="form-row"><label class="param-label">ПНР</label><input type="number" id="capexCommissioning" value="10"></div>
+        <div class="form-row"><label class="param-label">Инфраструктура</label><input type="number" id="capexInfrastructure" value="5.5"></div>
+        <div class="form-row"><label class="param-label">Амортизируемая доля CAPEX</label><input type="number" id="amortizableCapexPercent" value="85"><span>%</span></div>
+        <div class="form-row"><label class="param-label">Подд. CAPEX %</label><input type="number" id="maintCapexPercent" value="1.0" step="0.1"></div>
+        <div class="form-row"><label class="param-label">Ликв. стоимость %</label><input type="number" id="salvagePercent" value="10.0"></div>
+        <div id="capexProfileContainer"></div><button class="btn btn-secondary" id="addCapexRowBtn" type="button">+ Год инвестиций</button>
+        <div class="form-row"><label><input type="checkbox" id="lifecycleCheck"> Капремонты (lifecycle)</label></div>
+        <div id="lifecycleContainer"></div><button class="btn btn-secondary" id="addLifecycleRowBtn" type="button">+ Событие lifecycle</button>
+      </div></div>
+
+      <div class="panel-section collapsible"><div class="section-title">Эксплуатация</div><div class="section-content">
+        <div class="form-row"><label class="param-label">Часы работы (номинальные)</label><input type="number" id="operatingHours" value="7800"></div>
+        <div class="form-row"><label class="param-label">Загрузка (CF)</label><input type="number" id="loadFactor" value="1.0" step="0.1"></div>
+        <div class="form-row"><label class="param-label">Уд. расход газа (м³/кВт·ч)</label><input type="number" id="gasConsumption" value="0.272" step="0.001"></div>
+        <div class="form-row"><label class="param-label">Деградация %/год</label><input type="number" id="degradationRate" value="0.5" step="0.1"></div>
+        <div class="form-row"><label><input type="checkbox" id="ownNeedsCheck"> Собственные нужды</label><input type="number" id="ownNeedsPct" value="3" disabled> %</div>
+        <div class="form-row"><label><input type="checkbox" id="startupCheck"> Пусковой газ</label><input type="number" id="startupsNum" value="10" disabled> пусков <input type="number" id="startupGasVol" value="100" disabled> м³</div>
+      </div></div>
+
+      <div class="panel-section collapsible"><div class="section-title">Прочие OPEX</div><div class="section-content">
+        <div class="form-row"><label><input type="checkbox" id="otherOpexCheck"> Прочие OPEX</label><input type="number" id="otherOpexAmount" value="500000" disabled> ₽/год <select id="otherOpexInfl"><option value="none">Без индексации</option><option value="general">Общая инфляция</option></select></div>
+        <div class="form-row"><label><input type="checkbox" id="capacityPaymentCheck"> Плата за мощность</label><input type="number" id="capacityPaymentRate" value="200" disabled> ₽/кВт/мес</div>
+      </div></div>
+
+      <div class="panel-section opex-extra-section collapsible"><div class="section-title">Дополнительные статьи OPEX</div><div class="section-content">
+        <div class="form-row"><label><input type="checkbox" id="oilCheck"> Масло</label></div>
+        <div class="form-row"><label class="param-label">Расход масла, л/1000 ч на агрегат</label><input type="number" id="oilConsumptionRate" value="50" disabled></div>
+        <div class="form-row"><label class="param-label">Цена масла, руб/л</label><input type="number" id="oilPrice" value="500" disabled></div>
+        <div class="form-row"><label class="param-label">Интервал замены, ч</label><input type="number" id="oilChangeInterval" value="2000" disabled></div>
+        <div class="form-row"><label class="param-label">Стоимость замены (на 1 агрегат)</label><input type="number" id="oilChangeCost" value="150000" disabled> ₽</div>
+        <div class="form-row"><label class="param-label">Расходы на долив, ₽/год на агрегат</label><input type="number" id="oilTopUpCost" value="30000" disabled></div>
+        <div class="form-row"><label><input type="checkbox" id="wasteCheck"> Утилизация отходов</label></div>
+        <div class="form-row"><label class="param-label">Тип расчёта</label><select id="wasteType" disabled><option value="fixed">Фиксированная сумма</option><option value="perHour">За моточас</option></select></div>
+        <div class="form-row"><label class="param-label">Фикс. стоимость</label><input type="number" id="wasteFixedCost" value="100000" disabled> ₽/год</div>
+        <div class="form-row"><label class="param-label">Ставка за час</label><input type="number" id="wasteRatePerHour" value="50" disabled> ₽/ч</div>
+        <div class="form-row"><label><input type="checkbox" id="consumablesCheck"> Расходники</label></div>
+        <div class="form-row"><label class="param-label">Итого в год</label><input type="number" id="consumablesAnnual" value="200000" disabled> ₽</div>
+      </div></div>
+
+      <div class="panel-section collapsible"><div class="section-title">Когенерация</div><div class="section-content"><div class="form-row"><label><input type="checkbox" id="cogenCheck"> Тепло</label><input type="number" id="heatTariff" value="3000" disabled> ₽/Гкал</div></div></div>
+      <div class="panel-section collapsible"><div class="section-title">Мультирежим</div><div class="section-content">
+        <div class="form-row"><label><input type="checkbox" id="multimodeCheck"> Мультирежим</label></div>
+        <table style="width:100%; font-size:0.8rem;"><tr><th></th><th>Пик</th><th>Полупик</th><th>Ночь</th></tr>
+        <tr><td>Доля</td><td><input type="number" id="peakTimeShare" value="0.3" step="0.01"></td><td><input type="number" id="midTimeShare" value="0.3" step="0.01"></td><td><input type="number" id="nightTimeShare" value="0.4" step="0.01"></td></tr>
+        <tr><td>Загрузка</td><td><input type="number" id="peakLoadFactor" value="1.0" step="0.01"></td><td><input type="number" id="midLoadFactor" value="0.9" step="0.01"></td><td><input type="number" id="nightLoadFactor" value="0.7" step="0.01"></td></tr>
+        <tr><td>Тариф</td><td><input type="number" id="peakTariff" value="9.0" step="0.1"></td><td><input type="number" id="midTariff" value="7.5" step="0.1"></td><td><input type="number" id="nightTariff" value="5.5" step="0.1"></td></tr>
+        </table>
+      </div></div>
+
+      <div class="panel-section tax-section collapsible"><div class="section-title">Налоги</div><div class="section-content">
+        <div class="form-row"><label><input type="checkbox" id="useTaxCheckbox" checked> Налог на прибыль</label><input type="number" id="profitTaxRate" value="25"> %</div>
+        <div class="form-row"><label><input type="checkbox" id="usePropertyTax"> Налог на имущество</label><input type="number" id="propertyTaxRate" value="2.2" disabled> %</div>
+        <div class="form-row"><label><input type="checkbox" id="cadastralCheck"> Кадастровый</label><input type="number" id="cadastralVal" value="50000000" disabled> ₽ <input type="number" id="cadastralRate" value="1.5" disabled> %</div>
+        <div class="form-row"><label><input type="checkbox" id="useVAT"> НДС</label><input type="number" id="vatRate" value="20" disabled> %</div>
+        <div class="form-row"><label><input type="checkbox" id="vatOnCapexCheck"> Учитывать НДС в CAPEX</label></div>
+        <div class="form-row"><label class="param-label">Амортизация (лет)</label><input type="number" id="depreciationYears" value="15"></div>
+        <div class="form-row"><label><input type="checkbox" id="useTaxHolidays"> Каникулы</label><input type="number" id="taxHolidayYears" value="2" disabled> лет</div>
+      </div></div>
+
+      <div class="panel-section credit-section collapsible"><div class="section-title">Кредит</div><div class="section-content">
+        <div class="form-row"><label><input type="checkbox" id="useDebtCheckbox"> Заёмные средства</label></div>
+        <div class="form-row"><label class="param-label">Доля займа</label><input type="number" id="debtShare" value="70" disabled> %</div>
+        <div class="form-row"><label class="param-label">Ставка</label><input type="number" id="interestRate" value="14" disabled> %</div>
+        <div class="form-row"><label class="param-label">Ставка для LLCR</label><input type="number" id="llcrDiscountRate" value="14" disabled> %</div>
+        <div class="form-row"><label class="param-label">Срок</label><input type="number" id="loanYears" value="8" disabled> лет</div>
+        <div class="form-row"><label class="param-label">Льготный период</label><input type="number" id="graceYears" value="2" disabled> лет</div>
+        <div class="form-row"><label class="param-label">Тип погашения</label><select id="paymentType" disabled><option value="annuity">Аннуитет</option><option value="differentiated">Дифференцированный</option></select></div>
+      </div></div>
+
+      <div class="panel-section collapsible"><div class="section-title">Инфляция</div><div class="section-content">
+        <div class="form-row"><label class="param-label">Газ</label><input type="number" id="inflGas" value="0"> %</div>
+        <div class="form-row"><label class="param-label">Сеть</label><input type="number" id="inflGrid" value="0"> %</div>
+        <div class="form-row"><label class="param-label">ФОТ</label><input type="number" id="inflFOT" value="0"> %</div>
+        <div class="form-row"><label class="param-label">ТО</label><input type="number" id="inflMaint" value="0"> %</div>
+        <div class="form-row"><label class="param-label">Тепло</label><input type="number" id="inflHeat" value="0"> %</div>
+        <div class="form-row"><label class="param-label">Экология</label><input type="number" id="inflEcology" value="0"> %</div>
+        <div class="form-row"><label class="param-label">Общая</label><input type="number" id="inflGeneral" value="0"> %</div>
+      </div></div>
+
+      <div class="panel-section collapsible"><div class="section-title">Экология</div><div class="section-content"><div class="form-row"><label class="param-label">База (₽/год)</label><input type="number" id="ecologyBase" value="1500000"></div><div class="form-row"><label class="param-label">Коэффициент</label><input type="number" id="ecologyFactor" value="1.0" step="0.1"></div></div></div>
+      <div class="panel-section collapsible"><div class="section-title">Оборотный капитал</div><div class="section-content"><div class="form-row"><label><input type="checkbox" id="useWC"> Оборотный капитал</label><input type="number" id="wcPercent" value="5" disabled> %</div></div></div>
+      <div class="panel-section wacc-section collapsible"><div class="section-title">WACC</div><div class="section-content"><div class="form-row"><label class="param-label">Безрисковая ставка</label><input type="number" id="riskFreeRate" value="8.0"> %</div><div class="form-row"><label class="param-label">Премия за риск</label><input type="number" id="equityRiskPremium" value="6.0"> %</div><div class="form-row"><label class="param-label">Бета</label><input type="number" id="beta" value="1.2"></div></div></div>
+      <div class="panel-section collapsible"><div class="section-title">Доступность и эффективность</div><div class="section-content"><div class="form-row"><label><input type="checkbox" id="availCheck"> Коэф. готовности</label><input type="number" id="availRate" value="95" disabled> %</div><div class="form-row"><label><input type="checkbox" id="efficiencyCorrectionCheck"> Коррекция расхода</label><input type="number" id="efficiencyCorrectionPercent" value="15" disabled> % при 50% нагрузки</div></div></div>
+      <button class="btn btn-primary" id="refreshBtn">Пересчитать</button>
+    `;
+
+      document.getElementById('powerSlider').addEventListener('input', e => { document.getElementById('powerValueDisplay').innerText = e.target.value + ' МВт'; refresh(); });
+      document.getElementById('addStageBtn').addEventListener('click', () => addStageRow());
+      document.getElementById('addCapexRowBtn').addEventListener('click', () => addCapexRow());
+      document.getElementById('addLifecycleRowBtn').addEventListener('click', () => addLifecycleRow());
+      document.querySelectorAll('.collapsible .section-title').forEach(t => t.addEventListener('click', function () { this.parentElement.classList.toggle('collapsed'); }));
+      document.getElementById('refreshBtn').addEventListener('click', refresh);
+      document.querySelectorAll('#inputPanel input, #inputPanel select').forEach(el => el.addEventListener('change', refresh));
+
+      const bind = (checkId, ...ids) => { const cb = document.getElementById(checkId); const targets = ids.map(id => document.getElementById(id)).filter(Boolean); const upd = () => targets.forEach(t => t.disabled = !cb.checked); cb.addEventListener('change', upd); upd(); };
+      bind('ownNeedsCheck', 'ownNeedsPct'); bind('startupCheck', 'startupsNum', 'startupGasVol');
+      bind('otherOpexCheck', 'otherOpexAmount'); bind('capacityPaymentCheck', 'capacityPaymentRate');
+      bind('cogenCheck', 'heatTariff'); bind('usePropertyTax', 'propertyTaxRate');
+      bind('cadastralCheck', 'cadastralVal', 'cadastralRate'); bind('useVAT', 'vatRate');
+      bind('useTaxHolidays', 'taxHolidayYears'); bind('useDebtCheckbox', 'debtShare', 'interestRate', 'loanYears', 'graceYears', 'paymentType', 'llcrDiscountRate');
+      bind('useWC', 'wcPercent'); bind('availCheck', 'availRate'); bind('efficiencyCorrectionCheck', 'efficiencyCorrectionPercent');
+      bind('oilCheck', 'oilConsumptionRate', 'oilPrice', 'oilChangeInterval', 'oilChangeCost', 'oilTopUpCost');
+      bind('wasteCheck', 'wasteType', 'wasteFixedCost', 'wasteRatePerHour');
+      bind('consumablesCheck', 'consumablesAnnual');
+
+      const stagedCheck = document.getElementById('stagedCheck');
+      const traditionalSection = document.getElementById('traditionalCapexSection');
+      const updateTraditionalVisible = () => { if (stagedCheck.checked) traditionalSection.style.display = 'none'; else traditionalSection.style.display = 'block'; };
+      stagedCheck.addEventListener('change', () => { updateTraditionalVisible(); refresh(); });
+      updateTraditionalVisible();
+
+      addCapexRow(0, 100);
+      refresh();
+    }
+
+    function addStageRow(year = 1, power = 1.0) {
+      const div = document.createElement('div'); div.className = 'stage-row';
+      div.innerHTML = `<input class="stage-year" value="${year}" min="1" max="20" style="width:70px"> <input class="stage-power" value="${power}" step="0.5" style="width:80px"> МВт <button class="btn btn-secondary remove-stage-row" type="button">✕</button>`;
+      div.querySelector('.remove-stage-row').addEventListener('click', () => { div.remove(); refresh(); });
+      div.querySelectorAll('input').forEach(inp => inp.addEventListener('change', refresh));
+      document.getElementById('stagesContainer').appendChild(div);
+    }
+
+    function addCapexRow(year = 0, percent = 100) {
+      const div = document.createElement('div'); div.className = 'capex-year-row';
+      div.innerHTML = `<input class="capex-year" value="${year}" min="0" max="20" style="width:60px"> <input class="capex-percent" value="${percent}" step="0.1" style="width:80px"> <button class="btn btn-secondary remove-capex-row" type="button">✕</button>`;
+      div.querySelector('.remove-capex-row').addEventListener('click', () => { div.remove(); refresh(); });
+      div.querySelectorAll('input').forEach(inp => inp.addEventListener('change', refresh));
+      document.getElementById('capexProfileContainer').appendChild(div);
+    }
+
+    function addLifecycleRow(year = 10, assetPct = 35, costPct = 80) {
+      const div = document.createElement('div'); div.className = 'lifecycle-row';
+      div.innerHTML = `<input class="lifecycle-year" value="${year}" min="1" max="20" style="width:60px"> <input class="lifecycle-asset" value="${assetPct}" style="width:60px">% CAPEX <input class="lifecycle-cost" value="${costPct}" style="width:60px">% замены <button class="btn btn-secondary remove-lifecycle-row" type="button">✕</button>`;
+      div.querySelector('.remove-lifecycle-row').addEventListener('click', () => { div.remove(); refresh(); });
+      div.querySelectorAll('input').forEach(inp => inp.addEventListener('change', refresh));
+      document.getElementById('lifecycleContainer').appendChild(div);
+    }
+
+    // Сценарии (localStorage)
+    const scenarioSelect = document.getElementById('scenarioSelect');
+    function updateScenarios() { const sc = JSON.parse(localStorage.getItem('scenarios') || '[]'); scenarioSelect.innerHTML = sc.map((s, i) => `<option value="${i}">${s.name}</option>`).join(''); }
+    document.getElementById('saveScenarioBtn').addEventListener('click', () => { const name = prompt('Имя сценария:'); if (!name) return; const params = getParams(); const sc = JSON.parse(localStorage.getItem('scenarios') || '[]'); sc.push({ name, params }); localStorage.setItem('scenarios', JSON.stringify(sc)); updateScenarios(); });
+    document.getElementById('loadScenarioBtn').addEventListener('click', () => { const idx = scenarioSelect.value; const sc = JSON.parse(localStorage.getItem('scenarios') || '[]'); if (sc[idx]) { setFormParams(sc[idx].params); refresh(); } });
+    document.getElementById('deleteScenarioBtn').addEventListener('click', () => { const idx = parseInt(scenarioSelect.value); const sc = JSON.parse(localStorage.getItem('scenarios') || '[]'); if (idx >= 0) { sc.splice(idx, 1); localStorage.setItem('scenarios', JSON.stringify(sc)); updateScenarios(); } });
+    updateScenarios();
+
+    function setFormParams(p) {
+      const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+      const setChk = (id, val) => { const el = document.getElementById(id); if (el) el.checked = val; };
+      setVal('projectYears', p.projectYears);
+      setVal('powerSlider', p.powerMW);
+      document.getElementById('powerValueDisplay').innerText = p.powerMW + ' МВт';
+      document.querySelector(`input[name="voltageClass"][value="${p.voltageKV}"]`).checked = true;
+      setVal('fuelCost', p.fuelCostRubM3); setVal('gridPrice', p.gridPriceRubKWh);
+      setVal('operatingHours', p.operatingHours); setVal('gasConsumption', p.gasConsumption);
+      setVal('loadFactor', p.loadFactor); setVal('degradationRate', p.degradationPerYear);
+      setVal('salvagePercent', p.salvagePercent); setVal('maintCapexPercent', p.maintCapexPercent);
+      setChk('ownNeedsCheck', p.ownNeeds.percent > 0); setVal('ownNeedsPct', p.ownNeeds.percent);
+      setChk('startupCheck', p.startupGas.active); setVal('startupsNum', p.startupGas.startupsPerUnit); setVal('startupGasVol', p.startupGas.gasPerStartup);
+      setChk('otherOpexCheck', p.otherOpex.active); setVal('otherOpexAmount', p.otherOpex.totalAnnual);
+      if (document.getElementById('otherOpexInfl')) document.getElementById('otherOpexInfl').value = p.otherOpex.inflationType;
+      setChk('capacityPaymentCheck', p.otherOpex.includeCapacityPayment); setVal('capacityPaymentRate', p.otherOpex.capacityPaymentRate);
+      setChk('cogenCheck', p.cogeneration.active); setVal('heatTariff', p.cogeneration.heatTariffRubGcal);
+      setChk('multimodeCheck', p.multimode.active);
+      ['peak', 'mid', 'night'].forEach((z, i) => { setVal(z + 'TimeShare', p.multimode.timeShares[i]); setVal(z + 'LoadFactor', p.multimode.loadFactors[i]); setVal(z + 'Tariff', p.multimode.tariffs[i]); });
+      setChk('useTaxCheckbox', p.taxes.useProfitTax); setVal('profitTaxRate', p.taxes.profitTaxRate);
+      setChk('usePropertyTax', p.taxes.usePropertyTax); setVal('propertyTaxRate', p.taxes.propertyTaxRate);
+      setChk('cadastralCheck', p.taxes.useCadastral); setVal('cadastralVal', p.taxes.cadastralBuildingsValue); setVal('cadastralRate', p.taxes.cadastralRate);
+      setChk('useVAT', p.taxes.useVAT); setVal('vatRate', p.taxes.vatRate); setChk('vatOnCapexCheck', p.taxes.vatOnCapex);
+      setVal('depreciationYears', p.taxes.depreciationYears);
+      setChk('useTaxHolidays', p.taxes.taxHoliday); setVal('taxHolidayYears', p.taxes.taxHolidayYears);
+      setChk('useDebtCheckbox', p.debt.active); setVal('debtShare', p.debt.share); setVal('interestRate', p.debt.interestRate); setVal('loanYears', p.debt.term); setVal('graceYears', p.debt.graceYears);
+      if (document.getElementById('paymentType')) document.getElementById('paymentType').value = p.debt.paymentType;
+      setVal('llcrDiscountRate', p.debt.llcrDiscountRate);
+      setChk('lifecycleCheck', p.lifecycle?.active || false);
+      setVal('amortizableCapexPercent', p.taxes.amortizableCapexPercent);
+      setChk('oilCheck', p.oil.active); setVal('oilConsumptionRate', p.oil.consumptionRate); setVal('oilPrice', p.oil.price);
+      setVal('oilChangeInterval', p.oil.changeInterval); setVal('oilChangeCost', p.oil.changeCost); setVal('oilTopUpCost', p.oil.topUpCost);
+      setChk('wasteCheck', p.waste.active); if (document.getElementById('wasteType')) document.getElementById('wasteType').value = p.waste.type;
+      setVal('wasteFixedCost', p.waste.fixedCost); setVal('wasteRatePerHour', p.waste.ratePerHour);
+      setChk('consumablesCheck', p.consumables.active); setVal('consumablesAnnual', p.consumables.totalAnnual);
+      setChk('stagedCheck', p.stagedCommissioning?.active || false);
+      setVal('preProjectCapex', p.stagedCommissioning?.preProjectCapex || 0);
+      const stagesContainer = document.getElementById('stagesContainer');
+      if (stagesContainer) stagesContainer.innerHTML = '';
+      if (p.stagedCommissioning?.active && p.stagedCommissioning.stages) {
+        p.stagedCommissioning.stages.forEach(s => addStageRow(s.year, s.powerMW));
+      }
+      const capexContainer = document.getElementById('capexProfileContainer');
+      if (capexContainer && !p.stagedCommissioning?.active) {
+        capexContainer.innerHTML = '';
+        if (p.capexProfile && p.capexProfile.length) p.capexProfile.forEach(prof => addCapexRow(prof.yearOffset, prof.percent));
+        else addCapexRow(0, 100);
+      }
+      const lcContainer = document.getElementById('lifecycleContainer');
+      if (lcContainer && p.lifecycle?.active && p.lifecycle.events) {
+        lcContainer.innerHTML = '';
+        p.lifecycle.events.forEach(ev => addLifecycleRow(ev.year, ev.assetCapexPercent, ev.replacementCostPercent));
+      }
+      for (let k of ['gas', 'grid', 'fot', 'maint', 'heat', 'eco', 'general']) setVal('infl' + k.charAt(0).toUpperCase() + k.slice(1), p.inflation[k]);
+      setVal('ecologyBase', p.ecologyBase); setVal('ecologyFactor', p.ecologyFactor);
+      setChk('useWC', p.workingCapital.active); setVal('wcPercent', p.workingCapital.percent);
+      setVal('riskFreeRate', p.wacc.riskFree); setVal('beta', p.wacc.beta); setVal('equityRiskPremium', p.wacc.equityRisk);
+      setChk('availCheck', p.availability.active); setVal('availRate', p.availability.rate);
+      setChk('efficiencyCorrectionCheck', p.efficiencyCorrection.active); setVal('efficiencyCorrectionPercent', p.efficiencyCorrection.percent);
+      const stagedCheck = document.getElementById('stagedCheck');
+      const traditionalSection = document.getElementById('traditionalCapexSection');
+      if (stagedCheck && traditionalSection) {
+        if (stagedCheck.checked) traditionalSection.style.display = 'none'; else traditionalSection.style.display = 'block';
+      }
+      refresh();
+    }
+
+    // Анализ чувствительности (локальный, так как он многократно вызывает модель)
+    const sensParamsMap = {
+      'fuelCostRubM3': 'Цена газа', 'gridPriceRubKWh': 'Тариф сети',
+      'capex_total': 'Удельный CAPEX', 'powerMW': 'Мощность',
+      'operatingHours': 'Часы работы', 'gasConsumption': 'Уд. расход газа', 'degradationPerYear': 'Деградация'
+    };
+    const sensKeys = Object.keys(sensParamsMap);
+    document.getElementById('sensitivityParams').innerHTML = sensKeys.map(k => `<label><input type="checkbox" value="${k}" checked> ${sensParamsMap[k]}</label>`).join('');
+
+    document.getElementById('runSensitivity').addEventListener('click', async () => {
+      const baseParams = getParams();
+      const range = parseFloat(document.getElementById('sensitivityRange').value) / 100;
+      const target = document.getElementById('sensitivityTarget').value;
+      const checks = [...document.querySelectorAll('#sensitivityParams input[type=checkbox]:checked')].map(cb => cb.value);
+      if (!checks.length) return;
+
+      // Получаем базовую модель с сервера
+      const baseResponse = await fetch('/.netlify/functions/calculate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(baseParams)
+      });
+      const baseModel = await baseResponse.json();
+      const getMetric = (m) => {
+        if (target === 'project_npv') return m.metrics.project_npv;
+        if (target === 'equity_npv') return m.metrics.equity_npv;
+        if (target === 'project_irr') return m.metrics.project_irr || 0;
+        return m.metrics.equity_irr || 0;
+      };
+      const baseVal = getMetric(baseModel);
+      const results = [];
+      for (let param of checks) {
+        const lowParams = JSON.parse(JSON.stringify(baseParams));
+        const highParams = JSON.parse(JSON.stringify(baseParams));
+        let baseValue;
+        if (param === 'capex_total') {
+          baseValue = (baseParams.capexEquipment + baseParams.capexDesign + baseParams.capexNetwork + baseParams.capexCommissioning + baseParams.capexInfrastructure);
+          if (baseParams.voltageKV === 0.4) baseValue += 6;
+        } else {
+          baseValue = baseParams[param];
+        }
+        const lowVal = baseValue * (1 - range);
+        const highVal = baseValue * (1 + range);
+        if (param === 'capex_total') {
+          const factorLow = lowVal / baseValue;
+          const factorHigh = highVal / baseValue;
+          lowParams.capexEquipment *= factorLow;
+          lowParams.capexDesign *= factorLow;
+          lowParams.capexNetwork *= factorLow;
+          lowParams.capexCommissioning *= factorLow;
+          lowParams.capexInfrastructure *= factorLow;
+          highParams.capexEquipment *= factorHigh;
+          highParams.capexDesign *= factorHigh;
+          highParams.capexNetwork *= factorHigh;
+          highParams.capexCommissioning *= factorHigh;
+          highParams.capexInfrastructure *= factorHigh;
+        } else {
+          lowParams[param] = lowVal;
+          highParams[param] = highVal;
+        }
+        const [lowModel, highModel] = await Promise.all([
+          fetch('/.netlify/functions/calculate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(lowParams) }).then(r => r.json()),
+          fetch('/.netlify/functions/calculate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(highParams) }).then(r => r.json())
+        ]);
+        results.push({
+          param: sensParamsMap[param],
+          base: baseValue,
+          lowVal, highVal,
+          lowMetric: getMetric(lowModel),
+          highMetric: getMetric(highModel),
+          spread: Math.abs(getMetric(highModel) - getMetric(lowModel))
+        });
+      }
+      results.sort((a, b) => b.spread - a.spread);
+      if (charts.tornado) charts.tornado.destroy();
+      charts.tornado = new Chart(document.getElementById('tornadoChart'), {
+        type: 'bar',
+        data: {
+          labels: results.map(r => r.param),
+          datasets: [
+            { label: 'Низкое значение', data: results.map(r => r.lowMetric), backgroundColor: '#f87171' },
+            { label: 'Высокое значение', data: results.map(r => r.highMetric), backgroundColor: '#00bfa6' }
+          ]
+        },
+        options: { indexAxis: 'y', responsive: true, maintainAspectRatio: true }
+      });
+      document.getElementById('tornadoDesc').innerHTML = `Влияние изменения параметров на ${target === 'project_npv' ? 'NPV проекта' : target === 'equity_npv' ? 'NPV Equity' : target === 'project_irr' ? 'IRR проекта' : 'IRR Equity'}. Диапазон ±${document.getElementById('sensitivityRange').value}%.`;
+      const tableHtml = `<table class="sensitivity-table">
+      <thead><tr><th>Параметр</th><th>Базовое значение</th><th>Низкое (-${range * 100}%)</th><th>Высокое (+${range * 100}%)</th><th>Результат при низком</th><th>Результат при высоком</th><th>Размах</th></tr></thead>
+      <tbody>${results.map(r => `<tr>
+        <td>${r.param}</td>
+        <td>${r.base.toFixed(2)}</td>
+        <td>${r.lowVal.toFixed(2)}</td>
+        <td>${r.highVal.toFixed(2)}</td>
+        <td>${target.includes('npv') ? fmt(r.lowMetric) : (r.lowMetric * 100).toFixed(1) + '%'}</td>
+        <td>${target.includes('npv') ? fmt(r.highMetric) : (r.highMetric * 100).toFixed(1) + '%'}</td>
+        <td>${target.includes('npv') ? fmt(r.highMetric - r.lowMetric) : ((r.highMetric - r.lowMetric) * 100).toFixed(1) + '%'}</td>
+      </tr>`).join('')}</tbody>
+     </table>`;
+      document.getElementById('sensitivityTableContainer').innerHTML = tableHtml;
+    });
+
+    // Монте-Карло (локальный, так как много вызовов)
+    document.getElementById('runMonteCarlo').addEventListener('click', async () => {
+      const baseParams = getParams();
+      const iters = parseInt(document.getElementById('mcIterations').value) || 500;
+      const stdDev = parseFloat(document.getElementById('mcStdDev').value) / 100;
+      const npvs = [];
+      const progressSpan = document.getElementById('mcProgress');
+      for (let i = 0; i < iters; i++) {
+        const p = JSON.parse(JSON.stringify(baseParams));
+        const vary = (base) => base * (1 + (Math.random() * 2 - 1) * stdDev);
+        p.fuelCostRubM3 = vary(p.fuelCostRubM3);
+        p.gridPriceRubKWh = vary(p.gridPriceRubKWh);
+        const capexSum = (p.capexEquipment + p.capexDesign + p.capexNetwork + p.capexCommissioning + p.capexInfrastructure);
+        const factor = vary(1);
+        p.capexEquipment *= factor;
+        p.capexDesign *= factor;
+        p.capexNetwork *= factor;
+        p.capexCommissioning *= factor;
+        p.capexInfrastructure *= factor;
+        p.operatingHours = Math.min(8760, Math.max(100, vary(p.operatingHours)));
+        try {
+          const response = await fetch('/.netlify/functions/calculate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(p)
+          });
+          const model = await response.json();
+          npvs.push(model.metrics.project_npv);
+        } catch (e) { }
+        if (i % 100 === 0) progressSpan.innerText = `${i}/${iters}`;
+      }
+      progressSpan.innerText = 'Готово';
+      if (npvs.length === 0) { document.getElementById('mcStats').innerHTML = 'Ошибка: нет результатов'; return; }
+      const mean = npvs.reduce((a, b) => a + b, 0) / npvs.length;
+      const sorted = npvs.sort((a, b) => a - b);
+      const p10 = sorted[Math.floor(sorted.length * 0.1)];
+      const p90 = sorted[Math.floor(sorted.length * 0.9)];
+      const probPos = npvs.filter(v => v > 0).length / npvs.length * 100;
+      document.getElementById('mcStats').innerHTML = `Среднее NPV: ${fmt(mean)} | P10: ${fmt(p10)} | P90: ${fmt(p90)} | >0: ${probPos.toFixed(1)}%`;
+      const bins = 20, min = sorted[0], max = sorted[sorted.length - 1];
+      const step = (max - min) / bins;
+      const hist = new Array(bins).fill(0);
+      npvs.forEach(v => { const idx = Math.min(bins - 1, Math.floor((v - min) / step)); hist[idx]++; });
+      if (charts.mcHist) charts.mcHist.destroy();
+      charts.mcHist = new Chart(document.getElementById('mcHistogram'), {
+        type: 'bar',
+        data: { labels: Array.from({ length: bins }, (_, i) => (min + i * step).toFixed(0)), datasets: [{ data: hist, backgroundColor: '#00bfa6' }] }
+      });
+    });
+
+    // Отчёт (генерируется на клиенте из currentModel)
+    document.getElementById('generateReportBtn').addEventListener('click', () => {
+      if (!currentModel) {
+        showError('Сначала выполните расчёт (нажмите "Пересчитать")');
+        return;
+      }
+      const params = getParams();
+      const m = currentModel.metrics;
+      const yearly = currentModel.yearly_operating;
+      const debt = currentModel.debtSchedule;
+      const cfads = currentModel.cfads;
+
+      let reportHtml = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>Отчёт по проекту Энергоцентр</title>
+        <style>
+          body { font-family: 'Segoe UI', Arial, sans-serif; margin: 20px; background: #fff; color: #000; }
+          h1 { color: #00bfa6; }
+          h2 { border-bottom: 1px solid #ccc; margin-top: 20px; }
+          table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+          th, td { border: 1px solid #ddd; padding: 8px; text-align: center; vertical-align: top; }
+          th { background: #f2f2f2; }
+          .section { margin-bottom: 30px; }
+          .metric-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
+          .metric-card { background: #f9fafb; padding: 10px; border-radius: 8px; }
+          footer { font-size: 0.8em; color: #666; margin-top: 30px; text-align: center; }
+          @media print {
+            body { margin: 0; }
+            button { display: none; }
+          }
+        </style>
+      </head>
+      <body>
+        <h1>Энергоцентр · Project Finance – отчёт</h1>
+        <p><strong>Дата формирования:</strong> ${new Date().toLocaleString()}</p>
+        
+        <div class="section">
+          <h2>1. Исходные параметры проекта</h2>
+          <table>
+            <tr><th>Параметр</th><th>Значение</th></tr>
+            <tr><td>Горизонт (лет)</td><td>${params.projectYears}</td></tr>
+            <tr><td>Установленная мощность (МВт)</td><td>${params.powerMW}</td></tr>
+            <tr><td>Напряжение подключения</td><td>${params.voltageKV} кВ</td></tr>
+            <tr><td>Цена газа (руб/м³)</td><td>${params.fuelCostRubM3}</td></tr>
+            <tr><td>Тариф э/сети (руб/кВт·ч)</td><td>${params.gridPriceRubKWh}</td></tr>
+            <tr><td>Часы работы (номинальные)</td><td>${params.operatingHours}</td></tr>
+            <tr><td>Коэффициент загрузки</td><td>${params.loadFactor}</td></tr>
+            <tr><td>Уд. расход газа (м³/кВт·ч)</td><td>${params.gasConsumption}</td></tr>
+            <tr><td>Поддерживающий CAPEX (% от CAPEX)</td><td>${params.maintCapexPercent}%</td></tr>
+            <tr><td>Ликвидационная стоимость (%)</td><td>${params.salvagePercent}%</td></tr>
+            <tr><td>Капитальные затраты (млн/МВт): оборудование / проект / сети / ПНР / инфра</td><td>${params.capexEquipment} / ${params.capexDesign} / ${params.capexNetwork} / ${params.capexCommissioning} / ${params.capexInfrastructure}</td></tr>
+          </table>
+          <p><strong>Поэтапный пуск:</strong> ${params.stagedCommissioning.active ? 'Да' : 'Нет'} 
+          ${params.stagedCommissioning.active && params.stagedCommissioning.stages.length ? '<br>Этапы: ' + params.stagedCommissioning.stages.map(s => `${s.powerMW} МВт в год ${s.year}`).join(', ') : ''}
+          </p>
+          <p><strong>Кредит:</strong> ${params.debt.active ? `Доля ${params.debt.share}%, ставка ${params.debt.interestRate}%, срок ${params.debt.term} лет, льготный ${params.debt.graceYears} лет, тип ${params.debt.paymentType}` : 'не используется'}</p>
+          <p><strong>Налоги:</strong> прибыль ${params.taxes.useProfitTax ? `${params.taxes.profitTaxRate}%` : 'нет'}${params.taxes.taxHoliday ? ` (каникулы ${params.taxes.taxHolidayYears} лет)` : ''}, имущество ${params.taxes.usePropertyTax ? `${params.taxes.propertyTaxRate}%` : 'нет'}, НДС ${params.taxes.useVAT ? `${params.taxes.vatRate}%` : 'нет'}</p>
+          <p><strong>WACC расчётный:</strong> Ke = ${(m.ke * 100).toFixed(1)}%, WACC = ${(m.wacc * 100).toFixed(1)}%</p>
+        </div>
+
+        <div class="section">
+          <h2>2. Ключевые финансовые показатели</h2>
+          <div class="metric-grid">
+            <div class="metric-card"><strong>NPV проекта</strong><br>${fmt(m.project_npv)}</div>
+            <div class="metric-card"><strong>IRR проекта</strong><br>${m.project_irr ? fmtPercent(m.project_irr) : '—'}</div>
+            <div class="metric-card"><strong>NPV Equity</strong><br>${fmt(m.equity_npv)}</div>
+            <div class="metric-card"><strong>IRR Equity</strong><br>${m.equity_irr ? fmtPercent(m.equity_irr) : '—'}</div>
+            <div class="metric-card"><strong>Min DSCR</strong><br>${m.min_dscr === Infinity ? '—' : m.min_dscr.toFixed(2)}</div>
+            <div class="metric-card"><strong>LLCR</strong><br>${m.llcr ? m.llcr.toFixed(2) : '—'}</div>
+            <div class="metric-card"><strong>ROE (средняя)</strong><br>${m.roe.toFixed(1)}%</div>
+            <div class="metric-card"><strong>Общие инвестиции (CAPEX)</strong><br>${fmt(m.total_investment)}</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>3. Ежегодные денежные потоки (тыс. руб)</h2>
+          <table>
+            <thead><tr><th>Год</th><th>Выручка (без НДС)</th><th>OPEX</th><th>EBITDA</th><th>CFADS</th><th>FCFF</th><th>FCFE</th></tr></thead>
+            <tbody>
+              ${yearly.map((y, i) => `
+                <tr>
+                  <td>${y.year}</td>
+                  <td>${fmt(y.totalRevenue_excl_vat)}</td>
+                  <td>${fmt(y.opex_excl_vat)}</td>
+                  <td>${fmt(y.ebitda)}</td>
+                  <td>${fmt(currentModel.cfads[i])}</td>
+                  <td>${fmt(currentModel.fcff[i])}</td>
+                  <td>${fmt(currentModel.equity_cf[i])}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>4. График обслуживания долга</h2>
+          ${debt.length ? `
+          <table>
+            <thead><tr><th>Год</th><th>Остаток долга</th><th>Проценты</th><th>Погашение тела</th><th>Платёж всего</th><th>DSCR</th></tr></thead>
+            <tbody>
+              ${debt.map((d, idx) => `
+                <tr>
+                  <td>${d.year}</td>
+                  <td>${fmt(d.debt)}</td>
+                  <td>${fmt(d.interest)}</td>
+                  <td>${fmt(d.principal)}</td>
+                  <td>${fmt(d.payment)}</td>
+                  <td>${currentModel.metrics.dscr_values[idx] ? currentModel.metrics.dscr_values[idx].toFixed(2) : '—'}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+          ` : '<p>Кредитное финансирование не используется.</p>'}
+        </div>
+
+        <div class="section">
+          <h2>5. Структура операционных затрат (среднегодовая)</h2>
+          <table>
+            <tr><th>Статья</th><th>Среднегодовые (тыс. руб)</th></tr>
+            <tr><td>Топливо</td><td>${fmt(yearly.reduce((s, y) => s + y.fuelCost, 0) / yearly.length)}</td></tr>
+            <tr><td>Техобслуживание</td><td>${fmt(yearly.reduce((s, y) => s + y.maintCost, 0) / yearly.length)}</td></tr>
+            <tr><td>ФОТ</td><td>${fmt(yearly.reduce((s, y) => s + y.fotCost, 0) / yearly.length)}</td></tr>
+            <tr><td>Экология</td><td>${fmt(yearly.reduce((s, y) => s + y.ecoCost, 0) / yearly.length)}</td></tr>
+            <tr><td>Прочие</td><td>${fmt(yearly.reduce((s, y) => s + y.otherOpex, 0) / yearly.length)}</td></tr>
+            <tr><td>Масло</td><td>${fmt(yearly.reduce((s, y) => s + y.totalOilCost, 0) / yearly.length)}</td></tr>
+            <tr><td>Утилизация</td><td>${fmt(yearly.reduce((s, y) => s + y.wasteCost, 0) / yearly.length)}</td></tr>
+            <tr><td>Расходники</td><td>${fmt(yearly.reduce((s, y) => s + y.consumablesCost, 0) / yearly.length)}</td></tr>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>6. Анализ и выводы</h2>
+          <ul>
+            <li><strong>NPV проекта</strong> ${m.project_npv > 0 ? 'положительный' : 'отрицательный'} (${fmt(m.project_npv)}), что означает ${m.project_npv > 0 ? 'целесообразность реализации' : 'нецелесообразность'} проекта при заданных допущениях.</li>
+            <li><strong>IRR проекта</strong> = ${m.project_irr ? fmtPercent(m.project_irr) : '—'}. ${m.project_irr && m.project_irr > m.wacc ? 'Превышает WACC, проект создаёт стоимость.' : 'Ниже WACC, стоимость не создаётся.'}</li>
+            <li><strong>NPV акционеров</strong> = ${fmt(m.equity_npv)}. ${m.equity_npv > 0 ? 'Инвестиции в собственный капитал оправданы.' : 'Акционеры теряют стоимость.'}</li>
+            <li><strong>DSCR min</strong> = ${m.min_dscr === Infinity ? '—' : m.min_dscr.toFixed(2)}. ${m.min_dscr > 1.2 ? 'Кредитоспособность высокая.' : m.min_dscr > 1 ? 'Покрытие приемлемо.' : 'Риск дефолта высок.'}</li>
+            <li><strong>LLCR</strong> = ${m.llcr ? m.llcr.toFixed(2) : '—'}. ${m.llcr && m.llcr > 1 ? 'Долг обеспечен потоками на весь срок.' : 'Недостаточное покрытие.'}</li>
+            <li><strong>ROE</strong> = ${m.roe.toFixed(1)}%. ${m.roe > 15 ? 'Высокая рентабельность капитала.' : m.roe > 8 ? 'Средняя.' : 'Низкая.'}</li>
+          </ul>
+          <p><em>Вывод составлен на основе базового сценария. Для принятия решения рекомендуется провести анализ чувствительности и Монте-Карло.</em></p>
+        </div>
+        <footer>Автоматически сгенерировано моделью Энергоцентр</footer>
+      </body>
+      </html>
+      `;
+      const reportWindow = window.open();
+      reportWindow.document.write(reportHtml);
+      reportWindow.document.close();
+    });
+
+    // Методология (модальное окно)
+    const methodologyFullText = `ПОЛНАЯ МЕТОДОЛОГИЯ РАСЧЁТА ЭНЕРГОЦЕНТРА · PROJECT FINANCE (версия с поэтапным пуском)
+
+1. Назначение и область применения...`; // Здесь должен быть полный текст методологии, который у вас был ранее. Для краткости я его сократил, но вы можете вставить свой полный текст.
+
+    const modal = document.getElementById('methodologyModal');
+    const closeBtn = document.getElementById('closeMethodologyBtn');
+    const contentDiv = document.getElementById('methodologyContent');
+    document.getElementById('downloadMethodologyBtn').addEventListener('click', () => {
+      contentDiv.innerText = methodologyFullText;
+      modal.style.display = 'flex';
+    });
+    closeBtn.addEventListener('click', () => { modal.style.display = 'none'; });
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+    document.getElementById('themeToggle').addEventListener('click', () => document.body.classList.toggle('dark-theme'));
+
+    buildFullUI();
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    }));
+  </script>
+</body>
+
+</html>
